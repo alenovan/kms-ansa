@@ -20,7 +20,8 @@ const ComponentsAppsUsers = () => {
         id: null,
         nik: '',
         name: '',
-        birthDate: '',
+        gender: '',
+        dateOfBirth: '',
         motherName: '',
     });
     const [params, setParams] = useState<any>(JSON.parse(JSON.stringify(defaultParams)));
@@ -28,15 +29,16 @@ const ComponentsAppsUsers = () => {
     const [filteredItems, setFilteredItems] = useState<any>([]);
 
     // Fetch users from API
+    const fetchUsers = async () => {
+        try {
+            const response = await axios.get('/api/v1/intl/member'); // Replace with your API endpoint
+            setFilteredItems(response.data);
+        } catch (error) {
+            showMessage('Failed to load users', 'error');
+        }
+    };
+
     useEffect(() => {
-        const fetchUsers = async () => {
-            try {
-                const response = await axios.get('/api/v1/intl/member'); // Replace with your API endpoint
-                setFilteredItems(response.data);
-            } catch (error) {
-                showMessage('Failed to load users', 'error');
-            }
-        };
         fetchUsers();
     }, []);
 
@@ -58,7 +60,7 @@ const ComponentsAppsUsers = () => {
     }, [search]);
 
     const saveUser = async () => {
-        // if (!params.name || !params.nik || !params.birthDate || !params.motherName) {
+        // if (!params.name || !params.nik || !params.dateOfBirth || !params.motherName) {
         //     showMessage('All fields are required.', 'error');
         //     return;
         // }
@@ -67,7 +69,7 @@ const ComponentsAppsUsers = () => {
             // Update user
             try {
                 const response = await axios.put(`/api/v1/intl/member/${params.id}`, params); // Update API endpoint
-                setFilteredItems(filteredItems.map((user: any) => (user.id === params.id ? response.data : user)));
+                fetchUsers();
                 showMessage('User updated successfully.');
             } catch (error) {
                 showMessage('Failed to update user', 'error');
@@ -76,9 +78,10 @@ const ComponentsAppsUsers = () => {
             // Add new user
             try {
                 const response = await axios.post('/api/v1/intl/member', params); // Add user API endpoint
-                setFilteredItems([response.data, ...filteredItems]);
+                fetchUsers();
                 showMessage('User added successfully.');
             } catch (error) {
+                console.log(error);
                 showMessage('Failed to add user', 'error');
             }
         }
@@ -223,8 +226,15 @@ const ComponentsAppsUsers = () => {
                                                 <input id="name" type="text" placeholder="Enter Name" className="form-input" value={params.name} onChange={(e) => changeValue(e)} />
                                             </div>
                                             <div className="mb-5">
-                                                <label htmlFor="birthDate">Tanggal Lahir</label>
-                                                <input id="birthDate" type="date" placeholder="Tanggal Lahir" className="form-input" value={params.birthDate} onChange={(e) => changeValue(e)} />
+                                                <label htmlFor="gender">Jenis Kelamin</label>
+                                                <div className="flex gap-x-3">
+                                                    <input type="radio" checked={params.gender === 'M'} id="gender" value={'M'} onChange={(e) => changeValue(e)} /> Laki-laki
+                                                    <input type="radio" checked={params.gender === 'F'} id="gender" value={'F'} onChange={(e) => changeValue(e)} /> Perempuan
+                                                </div>
+                                            </div>
+                                            <div className="mb-5">
+                                                <label htmlFor="dateOfBirth">Tanggal Lahir</label>
+                                                <input id="dateOfBirth" type="date" placeholder="Tanggal Lahir" className="form-input" value={params.dateOfBirth} onChange={(e) => changeValue(e)} />
                                             </div>
                                             <div className="mb-5">
                                                 <label htmlFor="motherName">Nama Ibu</label>

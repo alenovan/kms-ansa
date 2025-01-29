@@ -22,8 +22,8 @@ export async function GET(request: Request) {
                     contains: search,
                 },
             },
-            skip: offset,
-            take: pageSize,
+            // skip: offset,
+            // take: pageSize,
             orderBy: {
                 createdAt: 'desc',
             },
@@ -62,11 +62,12 @@ export async function GET(request: Request) {
 export async function POST(request: Request) {
     try {
         const { nik, name, gender, dateOfBirth, motherName } = await request.json();
+        console.log(gender);
 
         // Validate gender using the enum
-        if (![Gender.M, Gender.F].includes(gender)) {
-            return NextResponse.json({ success: false, message: 'Invalid gender value' }, { status: 422 });
-        }
+        // if (![Gender.M, Gender.F].includes(gender)) {
+        //     return NextResponse.json({ success: false, message: 'Invalid gender value' }, { status: 422 });
+        // }
 
         const existingMember = await prisma.member.findUnique({
             where: { nik },
@@ -80,6 +81,7 @@ export async function POST(request: Request) {
             data: {
                 nik,
                 name,
+                gender,
                 dateOfBirth: new Date(dateOfBirth), // Ensure it's a valid Date object
                 motherName,
             },
