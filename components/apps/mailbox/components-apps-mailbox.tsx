@@ -1,4 +1,5 @@
 'use client';
+import 'react-quill/dist/quill.snow.css';
 import Dropdown from '@/components/dropdown';
 import IconArchive from '@/components/icon/icon-archive';
 import IconArrowBackward from '@/components/icon/icon-arrow-backward';
@@ -1060,7 +1061,7 @@ const ComponentsAppsMailbox = () => {
                 (d.title && d.title.toLowerCase().includes(searchText)) ||
                 (d.firstName && d.firstName.toLowerCase().includes(searchText)) ||
                 (d.lastName && d.lastName.toLowerCase().includes(searchText)) ||
-                (d.displayDescription && d.displayDescription.toLowerCase().includes(searchText))
+                (d.displayDescription && d.displayDescription.toLowerCase().includes(searchText)),
         );
 
         setFilteredMailList([
@@ -1069,7 +1070,7 @@ const ComponentsAppsMailbox = () => {
                     (d.title && d.title.toLowerCase().includes(searchText)) ||
                     (d.firstName && d.firstName.toLowerCase().includes(searchText)) ||
                     (d.lastName && d.lastName.toLowerCase().includes(searchText)) ||
-                    (d.displayDescription && d.displayDescription.toLowerCase().includes(searchText))
+                    (d.displayDescription && d.displayDescription.toLowerCase().includes(searchText)),
             ),
         ]);
 
