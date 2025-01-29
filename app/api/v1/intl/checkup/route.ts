@@ -11,12 +11,12 @@ export async function GET(request: Request) {
         const offset = (page - 1) * pageSize;
 
         const checkups = await prisma.checkup.findMany({
-            skip: offset,
-            take: pageSize,
+            // skip: offset,
+            // take: pageSize,
             orderBy: {
                 createdAt: 'desc',
             },
-            include: {},
+            include: { member: true },
         });
 
         const totalCheckup = await prisma.checkup.count({
