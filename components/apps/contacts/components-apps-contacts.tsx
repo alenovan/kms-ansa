@@ -46,11 +46,11 @@ const ComponentsAppsUsers = () => {
     };
 
     const searchUser = () => {
-        setFilteredItems(() => {
-            return filteredItems.filter((item: any) => {
-                return item.name.toLowerCase().includes(search.toLowerCase());
-            });
-        });
+        // setFilteredItems(() => {
+        //     return filteredItems?.data?.filter((item: any) => {
+        //         return item.name.toLowerCase().includes(search.toLowerCase());
+        //     });
+        // });
     };
 
     useEffect(() => {
@@ -99,7 +99,7 @@ const ComponentsAppsUsers = () => {
     const deleteUser = async (user: any) => {
         try {
             await axios.delete(`/api/v1/intl/member/${user.id}`); // Delete API endpoint
-            setFilteredItems(filteredItems.filter((d: any) => d.id !== user.id));
+            setFilteredItems(filteredItems.data.filter((d: any) => d.id !== user.id));
             showMessage('User deleted successfully.');
         } catch (error) {
             showMessage('Failed to delete user', 'error');
