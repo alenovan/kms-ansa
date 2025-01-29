@@ -1,0 +1,39 @@
+import { SHA256 as sha256 } from 'crypto-js';
+
+export const hashPassword = (value: string) => {
+    return sha256(value).toString();
+};
+
+export const formatDate = (date: Date) => {
+    const options: Intl.DateTimeFormatOptions = {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+    };
+
+    return new Date(date).toLocaleDateString('en-US', options);
+};
+
+export const generateSlug = (title: string) => {
+    const slug = title
+        .toLowerCase()
+        .replace(/[^\w\s-]/g, '')
+        .trim()
+        .replace(/\s+/g, '-')
+        .slice(0, 50);
+
+    return slug;
+};
+
+export const calculateAgeInMonths = (birthDate: string) => {
+    const today = new Date();
+    const birthDateObj = new Date(birthDate);
+
+    let ageInMonths = today.getFullYear() * 12 + today.getMonth() - (birthDateObj.getFullYear() * 12 + birthDateObj.getMonth());
+
+    if (today.getDate() < birthDateObj.getDate()) {
+        ageInMonths--;
+    }
+
+    return ageInMonths;
+};
