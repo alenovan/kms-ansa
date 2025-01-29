@@ -8,7 +8,7 @@ const ComponentsAuthLoginForm = () => {
     const router = useRouter();
     const submitForm = (e: any) => {
         e.preventDefault();
-        router.push('/');
+        router.push('/dashboard');
     };
 
     return (

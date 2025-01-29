@@ -358,7 +358,7 @@ const ComponentsDashboardAnalytics = () => {
                 <div className="mb-6 grid gap-6 sm:grid-cols-3 xl:grid-cols-5">
                     <div className="panel h-full sm:col-span-3 xl:col-span-2">
                         <div className="mb-5 flex items-start justify-between">
-                            <h5 className="text-lg font-semibold dark:text-white-light">Visitors by Browser</h5>
+                            <h5 className="text-lg font-semibold dark:text-white-light">Visitors</h5>
                         </div>
                         <div className="flex flex-col space-y-5">
                             <div className="flex items-center">
@@ -449,7 +449,7 @@ const ComponentsDashboardAnalytics = () => {
                             </div>
                             <div className="font-semibold ltr:ml-3 rtl:mr-3">
                                 <p className="text-xl dark:text-white-light">1,900</p>
-                                <h5 className="text-xs text-[#506690]">Referral</h5>
+                                <h5 className="text-xs text-[#506690]">Gizi Buruk</h5>
                             </div>
                         </div>
                         <div className="h-40">
@@ -463,7 +463,7 @@ const ComponentsDashboardAnalytics = () => {
                                 <IconChatDots className="h-5 w-5" />
                             </div>
                             <div className="font-semibold ltr:ml-3 rtl:mr-3">
-                                <p className="text-xl dark:text-white-light">18.2%</p>
+                                <p className="text-xl dark:text-white-light">18</p>
                                 <h5 className="text-xs text-[#506690]">Posyandu</h5>
                             </div>
                         </div>
