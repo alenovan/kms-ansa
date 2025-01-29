@@ -1,13 +1,13 @@
-import PosyanduApps from '@/components/apps/posyandu/components-apps-posyandu';
+import PuskesmasApps from '@/components/apps/puskesmas/components-apps-puskesmas';
 import { Metadata } from 'next';
 import React from 'react';
 
 export const metadata: Metadata = {
-    title: 'Contacts',
+    title: 'Puskesmas',
 };
 
 const Contacts = () => {
-    return <PosyanduApps />;
+    return <PuskesmasApps />;
 };
 
 export default Contacts;
