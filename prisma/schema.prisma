@@ -169,6 +169,7 @@ model Member {
   id            String @id @default(cuid())
   nik           String @unique
   name          String
+  gender        Gender @default(M)
   dateOfBirth   DateTime
   motherName    String
 
@@ -198,4 +199,9 @@ model Checkup {
 
   createdAt           DateTime @default(now())
   updatedAt           DateTime @updatedAt
+}
+
+enum Gender {
+  M
+  F
 }
