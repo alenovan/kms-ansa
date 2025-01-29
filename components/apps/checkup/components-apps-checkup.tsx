@@ -5,6 +5,7 @@ import { Transition, Dialog, TransitionChild, DialogPanel } from '@headlessui/re
 import React, { Fragment, useEffect, useState } from 'react';
 import Swal from 'sweetalert2';
 import axios from 'axios';
+import { calculateAge } from '@/utils/helpers';
 
 const Checkup = () => {
     const [addUserModal, setAddUserModal] = useState(false);
@@ -63,6 +64,7 @@ const Checkup = () => {
                                     <th>Status</th>
                                     <th>Height</th>
                                     <th>Weight</th>
+                                    <th>Age</th>
                                     <th>Checkup Date</th>
                                 </tr>
                             </thead>
@@ -74,6 +76,7 @@ const Checkup = () => {
                                             <td>{checkup.status}</td>
                                             <td>{checkup.height}</td>
                                             <td>{checkup.weight}</td>
+                                            <td>{calculateAge(checkup.member.dateOfBirth)}</td>
                                             <td>{new Date(checkup.checkupDate).toLocaleString()}</td>
                                         </tr>
                                     );
