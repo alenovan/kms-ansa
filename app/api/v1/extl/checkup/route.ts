@@ -59,7 +59,17 @@ export async function POST(request: Request) {
             },
         });
 
-        return NextResponse.json({ data: data, success: true, message: 'Successfully create checkup' }, { status: 200 });
+        return NextResponse.json(
+            {
+                success: true,
+                message: 'Successfully create checkup',
+                data: {
+                    name: user.name,
+                    status: status.join(', '),
+                },
+            },
+            { status: 200 },
+        );
     } catch (error: any) {
         return NextResponse.json({ error: error.message }, { status: 500 });
     }
