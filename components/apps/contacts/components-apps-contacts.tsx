@@ -11,11 +11,11 @@ import IconX from '@/components/icon/icon-x';
 import { Transition, Dialog, TransitionChild, DialogPanel } from '@headlessui/react';
 import React, { Fragment, useEffect, useState } from 'react';
 import Swal from 'sweetalert2';
+import axios from 'axios';
 
 const ComponentsAppsUsers = () => {
-    const [addUserModal, setAddUserModal] = useState<any>(false);
-
-    const [value, setValue] = useState<any>('list');
+    const [addUserModal, setAddUserModal] = useState(false);
+    const [value, setValue] = useState('list');
     const [defaultParams] = useState({
         id: null,
         nik: '',
@@ -23,107 +23,31 @@ const ComponentsAppsUsers = () => {
         birthDate: '',
         motherName: '',
     });
-
     const [params, setParams] = useState<any>(JSON.parse(JSON.stringify(defaultParams)));
+    const [search, setSearch] = useState('');
+    const [filteredItems, setFilteredItems] = useState<any>([]);
+
+    // Fetch users from API
+    useEffect(() => {
+        const fetchUsers = async () => {
+            try {
+                const response = await axios.get('/api/v1/intl/member'); // Replace with your API endpoint
+                setFilteredItems(response.data);
+            } catch (error) {
+                showMessage('Failed to load users', 'error');
+            }
+        };
+        fetchUsers();
+    }, []);
 
     const changeValue = (e: any) => {
         const { value, id } = e.target;
         setParams({ ...params, [id]: value });
     };
 
-    const [search, setSearch] = useState<any>('');
-    const [contactList] = useState<any>([
-        {
-            id: 1,
-            nik: '1234567890123456',
-            name: 'Alan Green',
-            birthDate: '1985-06-15',
-            motherName: 'Sarah Green',
-        },
-        {
-            id: 2,
-            nik: '1234567890123457',
-            name: 'Linda Nelson',
-            birthDate: '1990-08-22',
-            motherName: 'Emma Nelson',
-        },
-        {
-            id: 3,
-            nik: '1234567890123458',
-            name: 'Lila Perry',
-            birthDate: '1995-03-10',
-            motherName: 'Sophia Perry',
-        },
-        {
-            id: 4,
-            nik: '1234567890123459',
-            name: 'Andy King',
-            birthDate: '1982-12-05',
-            motherName: 'Grace King',
-        },
-        {
-            id: 5,
-            nik: '1234567890123460',
-            name: 'Jesse Cory',
-            birthDate: '1988-07-19',
-            motherName: 'Olivia Cory',
-        },
-        {
-            id: 6,
-            nik: '1234567890123461',
-            name: 'Xavier',
-            birthDate: '1993-09-25',
-            motherName: 'Isabella Xavier',
-        },
-        {
-            id: 7,
-            nik: '1234567890123462',
-            name: 'Susan',
-            birthDate: '1987-04-30',
-            motherName: 'Eleanor Susan',
-        },
-        {
-            id: 8,
-            nik: '1234567890123463',
-            name: 'Raci Lopez',
-            birthDate: '1992-11-14',
-            motherName: 'Martha Lopez',
-        },
-        {
-            id: 9,
-            nik: '1234567890123464',
-            name: 'Steven Mendoza',
-            birthDate: '1980-06-02',
-            motherName: 'Patricia Mendoza',
-        },
-        {
-            id: 10,
-            nik: '1234567890123465',
-            name: 'James Cantrell',
-            birthDate: '1991-02-18',
-            motherName: 'Deborah Cantrell',
-        },
-        {
-            id: 11,
-            nik: '1234567890123466',
-            name: 'Reginald Brown',
-            birthDate: '1986-05-08',
-            motherName: 'Margaret Brown',
-        },
-        {
-            id: 12,
-            nik: '1234567890123467',
-            name: 'Stacey Smith',
-            birthDate: '1994-10-21',
-            motherName: 'Brenda Smith',
-        },
-    ]);
-
-    const [filteredItems, setFilteredItems] = useState<any>(contactList);
-
     const searchUser = () => {
         setFilteredItems(() => {
-            return contactList.filter((item: any) => {
+            return filteredItems.filter((item: any) => {
                 return item.name.toLowerCase().includes(search.toLowerCase());
             });
         });
@@ -133,46 +57,32 @@ const ComponentsAppsUsers = () => {
         searchUser();
     }, [search]);
 
-    const saveUser = () => {
-        if (!params.name) {
-            showMessage('Name  Wajib.', 'error');
-            return true;
-        }
-        if (!params.nik) {
-            showMessage('Nik  Wajib.', 'error');
-            return true;
-        }
-        if (!params.birthDate) {
-            showMessage('Tanggal Lahir  Wajib.', 'error');
-            return true;
-        }
-        if (!params.motherName) {
-            showMessage('Nama Ibu  Wajib.', 'error');
-            return true;
-        }
+    const saveUser = async () => {
+        // if (!params.name || !params.nik || !params.birthDate || !params.motherName) {
+        //     showMessage('All fields are required.', 'error');
+        //     return;
+        // }
 
         if (params.id) {
-            //update user
-            let user: any = filteredItems.find((d: any) => d.id === params.id);
-            user.nik = params.nik;
-            user.name = params.name;
-            user.birthDate = params.birthDate;
-            user.motherName = params.motherName;
+            // Update user
+            try {
+                const response = await axios.put(`/api/v1/intl/member/${params.id}`, params); // Update API endpoint
+                setFilteredItems(filteredItems.map((user: any) => (user.id === params.id ? response.data : user)));
+                showMessage('User updated successfully.');
+            } catch (error) {
+                showMessage('Failed to update user', 'error');
+            }
         } else {
-            //add user
-            let maxUserId = filteredItems.length ? filteredItems.reduce((max: any, character: any) => (character.id > max ? character.id : max), filteredItems[0].id) : 0;
-
-            let user = {
-                id: maxUserId + 1,
-                nik: params.nik,
-                birthDate: params.birthDate,
-                motherName: params.motherName,
-            };
-            filteredItems.splice(0, 0, user);
-            //   searchUsers();
+            // Add new user
+            try {
+                const response = await axios.post('/api/v1/intl/member', params); // Add user API endpoint
+                setFilteredItems([response.data, ...filteredItems]);
+                showMessage('User added successfully.');
+            } catch (error) {
+                showMessage('Failed to add user', 'error');
+            }
         }
 
-        showMessage('Peserta has been saved successfully.');
         setAddUserModal(false);
     };
 
@@ -186,9 +96,14 @@ const ComponentsAppsUsers = () => {
         setAddUserModal(true);
     };
 
-    const deleteUser = (user: any = null) => {
-        setFilteredItems(filteredItems.filter((d: any) => d.id !== user.id));
-        showMessage('User has been deleted successfully.');
+    const deleteUser = async (user: any) => {
+        try {
+            await axios.delete(`/api/v1/intl/member/${user.id}`); // Delete API endpoint
+            setFilteredItems(filteredItems.filter((d: any) => d.id !== user.id));
+            showMessage('User deleted successfully.');
+        } catch (error) {
+            showMessage('Failed to delete user', 'error');
+        }
     };
 
     const showMessage = (msg = '', type = 'success') => {
@@ -205,7 +120,6 @@ const ComponentsAppsUsers = () => {
             padding: '10px 20px',
         });
     };
-
     return (
         <div>
             <div className="flex flex-wrap items-center justify-between gap-4">
@@ -227,6 +141,7 @@ const ComponentsAppsUsers = () => {
                     </div>
                 </div>
             </div>
+
             {value === 'list' && (
                 <div className="panel mt-5 overflow-hidden border-0 p-0">
                     <div className="table-responsive">
@@ -241,12 +156,12 @@ const ComponentsAppsUsers = () => {
                                 </tr>
                             </thead>
                             <tbody>
-                                {filteredItems.map((contact: any) => {
+                                {filteredItems?.data?.map((contact: any) => {
                                     return (
                                         <tr key={contact.nik}>
                                             <td>{contact.nik}</td>
                                             <td>{contact.name}</td>
-                                            <td>{contact.birthDate}</td>
+                                            <td>{contact.dateOfBirth}</td>
                                             <td>{contact.motherName}</td>
                                             <td>
                                                 <div className="flex items-center justify-center gap-4">
@@ -269,7 +184,7 @@ const ComponentsAppsUsers = () => {
                     </div>
                 </div>
             )}
-            ``
+
             <Transition appear show={addUserModal} as={Fragment}>
                 <Dialog as="div" open={addUserModal} onClose={() => setAddUserModal(false)} className="relative z-50">
                     <TransitionChild as={Fragment} enter="ease-out duration-300" enterFrom="opacity-0" enterTo="opacity-100" leave="ease-in duration-200" leaveFrom="opacity-100" leaveTo="opacity-0">
@@ -300,19 +215,19 @@ const ComponentsAppsUsers = () => {
                                     <div className="p-5">
                                         <form>
                                             <div className="mb-5">
-                                                <label htmlFor="name">NIK</label>
-                                                <input id="nik" type="text" placeholder="Enter Name" className="form-input" value={params.nik} onChange={(e) => changeValue(e)} />
+                                                <label htmlFor="nik">NIK</label>
+                                                <input id="nik" type="text" placeholder="Enter NIK" className="form-input" value={params.nik} onChange={(e) => changeValue(e)} />
                                             </div>
                                             <div className="mb-5">
                                                 <label htmlFor="name">Nama</label>
                                                 <input id="name" type="text" placeholder="Enter Name" className="form-input" value={params.name} onChange={(e) => changeValue(e)} />
                                             </div>
                                             <div className="mb-5">
-                                                <label htmlFor="email">Tangagl Lahir</label>
+                                                <label htmlFor="birthDate">Tanggal Lahir</label>
                                                 <input id="birthDate" type="date" placeholder="Tanggal Lahir" className="form-input" value={params.birthDate} onChange={(e) => changeValue(e)} />
                                             </div>
                                             <div className="mb-5">
-                                                <label htmlFor="number">Nama Ibu</label>
+                                                <label htmlFor="motherName">Nama Ibu</label>
                                                 <input id="motherName" type="text" placeholder="Nama Ibu" className="form-input" value={params.motherName} onChange={(e) => changeValue(e)} />
                                             </div>
                                             <div className="mt-8 flex items-center justify-end">
