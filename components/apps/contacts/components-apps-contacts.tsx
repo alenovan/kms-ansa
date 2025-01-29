@@ -18,11 +18,10 @@ const ComponentsAppsUsers = () => {
     const [value, setValue] = useState<any>('list');
     const [defaultParams] = useState({
         id: null,
+        nik: '',
         name: '',
-        email: '',
-        phone: '',
-        role: '',
-        location: '',
+        birthDate: '',
+        motherName: '',
     });
 
     const [params, setParams] = useState<any>(JSON.parse(JSON.stringify(defaultParams)));
@@ -36,147 +35,87 @@ const ComponentsAppsUsers = () => {
     const [contactList] = useState<any>([
         {
             id: 1,
-            path: 'profile-35.png',
+            nik: '1234567890123456',
             name: 'Alan Green',
-            role: 'Web Developer',
-            email: 'alan@mail.com',
-            location: 'Boston, USA',
-            phone: '+1 202 555 0197',
-            posts: 25,
-            followers: '5K',
-            following: 500,
+            birthDate: '1985-06-15',
+            motherName: 'Sarah Green',
         },
         {
             id: 2,
-            path: 'profile-35.png',
+            nik: '1234567890123457',
             name: 'Linda Nelson',
-            role: 'Web Designer',
-            email: 'linda@mail.com',
-            location: 'Sydney, Australia',
-            phone: '+1 202 555 0170',
-            posts: 25,
-            followers: '21.5K',
-            following: 350,
+            birthDate: '1990-08-22',
+            motherName: 'Emma Nelson',
         },
         {
             id: 3,
-            path: 'profile-35.png',
+            nik: '1234567890123458',
             name: 'Lila Perry',
-            role: 'UX/UI Designer',
-            email: 'lila@mail.com',
-            location: 'Miami, USA',
-            phone: '+1 202 555 0105',
-            posts: 20,
-            followers: '21.5K',
-            following: 350,
+            birthDate: '1995-03-10',
+            motherName: 'Sophia Perry',
         },
         {
             id: 4,
-            path: 'profile-35.png',
+            nik: '1234567890123459',
             name: 'Andy King',
-            role: 'Project Lead',
-            email: 'andy@mail.com',
-            location: 'Tokyo, Japan',
-            phone: '+1 202 555 0194',
-            posts: 25,
-            followers: '21.5K',
-            following: 300,
+            birthDate: '1982-12-05',
+            motherName: 'Grace King',
         },
         {
             id: 5,
-            path: 'profile-35.png',
+            nik: '1234567890123460',
             name: 'Jesse Cory',
-            role: 'Web Developer',
-            email: 'jesse@mail.com',
-            location: 'Edinburgh, UK',
-            phone: '+1 202 555 0161',
-            posts: 30,
-            followers: '20K',
-            following: 350,
+            birthDate: '1988-07-19',
+            motherName: 'Olivia Cory',
         },
         {
             id: 6,
-            path: 'profile-35.png',
+            nik: '1234567890123461',
             name: 'Xavier',
-            role: 'UX/UI Designer',
-            email: 'xavier@mail.com',
-            location: 'New York, USA',
-            phone: '+1 202 555 0155',
-            posts: 25,
-            followers: '21.5K',
-            following: 350,
+            birthDate: '1993-09-25',
+            motherName: 'Isabella Xavier',
         },
         {
             id: 7,
-            path: 'profile-35.png',
+            nik: '1234567890123462',
             name: 'Susan',
-            role: 'Project Manager',
-            email: 'susan@mail.com',
-            location: 'Miami, USA',
-            phone: '+1 202 555 0118',
-            posts: 40,
-            followers: '21.5K',
-            following: 350,
+            birthDate: '1987-04-30',
+            motherName: 'Eleanor Susan',
         },
         {
             id: 8,
-            path: 'profile-35.png',
+            nik: '1234567890123463',
             name: 'Raci Lopez',
-            role: 'Web Developer',
-            email: 'traci@mail.com',
-            location: 'Edinburgh, UK',
-            phone: '+1 202 555 0135',
-            posts: 25,
-            followers: '21.5K',
-            following: 350,
+            birthDate: '1992-11-14',
+            motherName: 'Martha Lopez',
         },
         {
             id: 9,
-            path: 'profile-35.png',
+            nik: '1234567890123464',
             name: 'Steven Mendoza',
-            role: 'HR',
-            email: 'sokol@verizon.net',
-            location: 'Monrovia, US',
-            phone: '+1 202 555 0100',
-            posts: 40,
-            followers: '21.8K',
-            following: 300,
+            birthDate: '1980-06-02',
+            motherName: 'Patricia Mendoza',
         },
         {
             id: 10,
-            path: 'profile-35.png',
+            nik: '1234567890123465',
             name: 'James Cantrell',
-            role: 'Web Developer',
-            email: 'sravani@comcast.net',
-            location: 'Michigan, US',
-            phone: '+1 202 555 0134',
-            posts: 100,
-            followers: '28K',
-            following: 520,
+            birthDate: '1991-02-18',
+            motherName: 'Deborah Cantrell',
         },
         {
             id: 11,
-            path: 'profile-35.png',
+            nik: '1234567890123466',
             name: 'Reginald Brown',
-            role: 'Web Designer',
-            email: 'drhyde@gmail.com',
-            location: 'Entrimo, Spain',
-            phone: '+1 202 555 0153',
-            posts: 35,
-            followers: '25K',
-            following: 500,
+            birthDate: '1986-05-08',
+            motherName: 'Margaret Brown',
         },
         {
             id: 12,
-            path: 'profile-35.png',
+            nik: '1234567890123467',
             name: 'Stacey Smith',
-            role: 'Chief technology officer',
-            email: 'maikelnai@optonline.net',
-            location: 'Lublin, Poland',
-            phone: '+1 202 555 0115',
-            posts: 21,
-            followers: '5K',
-            following: 200,
+            birthDate: '1994-10-21',
+            motherName: 'Brenda Smith',
         },
     ]);
 
@@ -196,51 +135,44 @@ const ComponentsAppsUsers = () => {
 
     const saveUser = () => {
         if (!params.name) {
-            showMessage('Name is required.', 'error');
+            showMessage('Name  Wajib.', 'error');
             return true;
         }
-        if (!params.email) {
-            showMessage('Email is required.', 'error');
+        if (!params.nik) {
+            showMessage('Nik  Wajib.', 'error');
             return true;
         }
-        if (!params.phone) {
-            showMessage('Phone is required.', 'error');
+        if (!params.birthDate) {
+            showMessage('Tanggal Lahir  Wajib.', 'error');
             return true;
         }
-        if (!params.role) {
-            showMessage('Occupation is required.', 'error');
+        if (!params.motherName) {
+            showMessage('Nama Ibu  Wajib.', 'error');
             return true;
         }
 
         if (params.id) {
             //update user
             let user: any = filteredItems.find((d: any) => d.id === params.id);
+            user.nik = params.nik;
             user.name = params.name;
-            user.email = params.email;
-            user.phone = params.phone;
-            user.role = params.role;
-            user.location = params.location;
+            user.birthDate = params.birthDate;
+            user.motherName = params.motherName;
         } else {
             //add user
             let maxUserId = filteredItems.length ? filteredItems.reduce((max: any, character: any) => (character.id > max ? character.id : max), filteredItems[0].id) : 0;
 
             let user = {
                 id: maxUserId + 1,
-                path: 'profile-35.png',
-                name: params.name,
-                email: params.email,
-                phone: params.phone,
-                role: params.role,
-                location: params.location,
-                posts: 20,
-                followers: '5K',
-                following: 500,
+                nik: params.nik,
+                birthDate: params.birthDate,
+                motherName: params.motherName,
             };
             filteredItems.splice(0, 0, user);
             //   searchUsers();
         }
 
-        showMessage('User has been saved successfully.');
+        showMessage('Peserta has been saved successfully.');
         setAddUserModal(false);
     };
 
@@ -277,13 +209,13 @@ const ComponentsAppsUsers = () => {
     return (
         <div>
             <div className="flex flex-wrap items-center justify-between gap-4">
-                <h2 className="text-xl">Users</h2>
+                <h2 className="text-xl">Peserta</h2>
                 <div className="flex w-full flex-col gap-4 sm:w-auto sm:flex-row sm:items-center sm:gap-3">
                     <div className="flex gap-3">
                         <div>
                             <button type="button" className="btn btn-primary" onClick={() => editUser()}>
                                 <IconUserPlus className="ltr:mr-2 rtl:ml-2" />
-                                Add User
+                                Tambah Peserta
                             </button>
                         </div>
                     </div>
@@ -301,38 +233,26 @@ const ComponentsAppsUsers = () => {
                         <table className="table-striped table-hover">
                             <thead>
                                 <tr>
-                                    <th>Name</th>
-                                    <th>Email</th>
-                                    <th>Phone</th>
+                                    <th>NIK</th>
+                                    <th>Nama</th>
+                                    <th>Tanggal lahir</th>
+                                    <th>Nama Ibu</th>
                                     <th className="!text-center">Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {filteredItems.map((contact: any) => {
                                     return (
-                                        <tr key={contact.id}>
-                                            <td>
-                                                <div className="flex w-max items-center">
-                                                    {contact.path && (
-                                                        <div className="w-max">
-                                                            <img src={`/assets/images/${contact.path}`} className="h-8 w-8 rounded-full object-cover ltr:mr-2 rtl:ml-2" alt="avatar" />
-                                                        </div>
-                                                    )}
-                                                    {!contact.path && contact.name && (
-                                                        <div className="grid h-8 w-8 place-content-center rounded-full bg-primary text-sm font-semibold text-white ltr:mr-2 rtl:ml-2"></div>
-                                                    )}
-                                                    {!contact.path && !contact.name && (
-                                                        <div className="rounded-full border border-gray-300 p-2 ltr:mr-2 rtl:ml-2 dark:border-gray-800">
-                                                            <IconUser className="h-4.5 w-4.5" />
-                                                        </div>
-                                                    )}
-                                                    <div>{contact.name}</div>
-                                                </div>
-                                            </td>
-                                            <td>{contact.email}</td>
-                                            <td className="whitespace-nowrap">{contact.phone}</td>
+                                        <tr key={contact.nik}>
+                                            <td>{contact.nik}</td>
+                                            <td>{contact.name}</td>
+                                            <td>{contact.birthDate}</td>
+                                            <td>{contact.motherName}</td>
                                             <td>
                                                 <div className="flex items-center justify-center gap-4">
+                                                    <button type="button" className="btn btn-sm btn-outline-primary" onClick={() => editUser(contact)}>
+                                                        Riwayat Checkup
+                                                    </button>
                                                     <button type="button" className="btn btn-sm btn-outline-primary" onClick={() => editUser(contact)}>
                                                         Edit
                                                     </button>
@@ -349,89 +269,7 @@ const ComponentsAppsUsers = () => {
                     </div>
                 </div>
             )}
-
-            {value === 'grid' && (
-                <div className="mt-5 grid w-full grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
-                    {filteredItems.map((contact: any) => {
-                        return (
-                            <div className="relative overflow-hidden rounded-md bg-white text-center shadow dark:bg-[#1c232f]" key={contact.id}>
-                                <div className="relative overflow-hidden rounded-md bg-white text-center shadow dark:bg-[#1c232f]">
-                                    <div className="rounded-t-md bg-white/40 bg-[url('/assets/images/notification-bg.png')] bg-cover bg-center p-6 pb-0">
-                                        <img className="mx-auto max-h-40 w-4/5 object-contain" src={`/assets/images/${contact.path}`} alt="contact_image" />
-                                    </div>
-                                    <div className="relative -mt-10 px-6 pb-24">
-                                        <div className="rounded-md bg-white px-2 py-4 shadow-md dark:bg-gray-900">
-                                            <div className="text-xl">{contact.name}</div>
-                                            <div className="text-white-dark">{contact.role}</div>
-                                            <div className="mt-6 flex flex-wrap items-center justify-between gap-3">
-                                                <div className="flex-auto">
-                                                    <div className="text-info">{contact.posts}</div>
-                                                    <div>Posts</div>
-                                                </div>
-                                                <div className="flex-auto">
-                                                    <div className="text-info">{contact.following}</div>
-                                                    <div>Following</div>
-                                                </div>
-                                                <div className="flex-auto">
-                                                    <div className="text-info">{contact.followers}</div>
-                                                    <div>Followers</div>
-                                                </div>
-                                            </div>
-                                            <div className="mt-4">
-                                                <ul className="flex items-center justify-center space-x-4 rtl:space-x-reverse">
-                                                    <li>
-                                                        <button type="button" className="btn btn-outline-primary h-7 w-7 rounded-full p-0">
-                                                            <IconFacebook />
-                                                        </button>
-                                                    </li>
-                                                    <li>
-                                                        <button type="button" className="btn btn-outline-primary h-7 w-7 rounded-full p-0">
-                                                            <IconInstagram />
-                                                        </button>
-                                                    </li>
-                                                    <li>
-                                                        <button type="button" className="btn btn-outline-primary h-7 w-7 rounded-full p-0">
-                                                            <IconLinkedin />
-                                                        </button>
-                                                    </li>
-                                                    <li>
-                                                        <button type="button" className="btn btn-outline-primary h-7 w-7 rounded-full p-0">
-                                                            <IconTwitter />
-                                                        </button>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                        </div>
-                                        <div className="mt-6 grid grid-cols-1 gap-4 ltr:text-left rtl:text-right">
-                                            <div className="flex items-center">
-                                                <div className="flex-none ltr:mr-2 rtl:ml-2">Email :</div>
-                                                <div className="truncate text-white-dark">{contact.email}</div>
-                                            </div>
-                                            <div className="flex items-center">
-                                                <div className="flex-none ltr:mr-2 rtl:ml-2">Phone :</div>
-                                                <div className="text-white-dark">{contact.phone}</div>
-                                            </div>
-                                            <div className="flex items-center">
-                                                <div className="flex-none ltr:mr-2 rtl:ml-2">Address :</div>
-                                                <div className="text-white-dark">{contact.location}</div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className="absolute bottom-0 mt-6 flex w-full gap-4 p-6 ltr:left-0 rtl:right-0">
-                                        <button type="button" className="btn btn-outline-primary w-1/2" onClick={() => editUser(contact)}>
-                                            Edit
-                                        </button>
-                                        <button type="button" className="btn btn-outline-danger w-1/2" onClick={() => deleteUser(contact)}>
-                                            Delete
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        );
-                    })}
-                </div>
-            )}
-
+            ``
             <Transition appear show={addUserModal} as={Fragment}>
                 <Dialog as="div" open={addUserModal} onClose={() => setAddUserModal(false)} className="relative z-50">
                     <TransitionChild as={Fragment} enter="ease-out duration-300" enterFrom="opacity-0" enterTo="opacity-100" leave="ease-in duration-200" leaveFrom="opacity-100" leaveTo="opacity-0">
@@ -456,35 +294,26 @@ const ComponentsAppsUsers = () => {
                                     >
                                         <IconX />
                                     </button>
-                                    <div className="bg-[#fbfbfb] py-3 text-lg font-medium ltr:pl-5 ltr:pr-[50px] rtl:pl-[50px] rtl:pr-5 dark:bg-[#121c2c]">{params.id ? 'Edit User' : 'Add User'}</div>
+                                    <div className="bg-[#fbfbfb] py-3 text-lg font-medium ltr:pl-5 ltr:pr-[50px] rtl:pl-[50px] rtl:pr-5 dark:bg-[#121c2c]">
+                                        {params.id ? 'Edit Peserta' : 'Add Peserta'}
+                                    </div>
                                     <div className="p-5">
                                         <form>
                                             <div className="mb-5">
-                                                <label htmlFor="name">Name</label>
+                                                <label htmlFor="name">NIK</label>
+                                                <input id="nik" type="text" placeholder="Enter Name" className="form-input" value={params.nik} onChange={(e) => changeValue(e)} />
+                                            </div>
+                                            <div className="mb-5">
+                                                <label htmlFor="name">Nama</label>
                                                 <input id="name" type="text" placeholder="Enter Name" className="form-input" value={params.name} onChange={(e) => changeValue(e)} />
                                             </div>
                                             <div className="mb-5">
-                                                <label htmlFor="email">Email</label>
-                                                <input id="email" type="email" placeholder="Enter Email" className="form-input" value={params.email} onChange={(e) => changeValue(e)} />
+                                                <label htmlFor="email">Tangagl Lahir</label>
+                                                <input id="birthDate" type="date" placeholder="Tanggal Lahir" className="form-input" value={params.birthDate} onChange={(e) => changeValue(e)} />
                                             </div>
                                             <div className="mb-5">
-                                                <label htmlFor="number">Phone Number</label>
-                                                <input id="phone" type="text" placeholder="Enter Phone Number" className="form-input" value={params.phone} onChange={(e) => changeValue(e)} />
-                                            </div>
-                                            <div className="mb-5">
-                                                <label htmlFor="occupation">Occupation</label>
-                                                <input id="role" type="text" placeholder="Enter Occupation" className="form-input" value={params.role} onChange={(e) => changeValue(e)} />
-                                            </div>
-                                            <div className="mb-5">
-                                                <label htmlFor="address">Address</label>
-                                                <textarea
-                                                    id="location"
-                                                    rows={3}
-                                                    placeholder="Enter Address"
-                                                    className="form-textarea min-h-[130px] resize-none"
-                                                    value={params.location}
-                                                    onChange={(e) => changeValue(e)}
-                                                ></textarea>
+                                                <label htmlFor="number">Nama Ibu</label>
+                                                <input id="motherName" type="text" placeholder="Nama Ibu" className="form-input" value={params.motherName} onChange={(e) => changeValue(e)} />
                                             </div>
                                             <div className="mt-8 flex items-center justify-end">
                                                 <button type="button" className="btn btn-outline-danger" onClick={() => setAddUserModal(false)}>
