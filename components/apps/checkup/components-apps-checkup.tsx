@@ -72,7 +72,7 @@ const Checkup = () => {
                                 {filteredItems.map((checkup: any) => {
                                     return (
                                         <tr key={checkup.id}>
-                                            <td>{checkup.memberId}</td>
+                                            <td>{checkup.member.name}</td>
                                             <td>{checkup.status}</td>
                                             <td>{checkup.height}</td>
                                             <td>{checkup.weight}</td>
