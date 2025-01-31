@@ -45,7 +45,7 @@ const ContactUsCover = () => {
                             </div>
                             <ComponentsPagesContactUsForm />
                         </div>
-                        <p className="absolute bottom-6 w-full text-center dark:text-white">© {new Date().getFullYear()}.VRISTO All Rights Reserved.</p>
+                        <p className="absolute bottom-6 w-full text-center dark:text-white">© {new Date().getFullYear()}.UKUR MANDIRI DIGITAL STUNTING</p>
                     </div>
                 </div>
             </div>
