@@ -25,13 +25,12 @@ export const generateSlug = (title: string) => {
     return slug;
 };
 
-export const calculateAgeInMonths = (birthDate: string) => {
+export const calculateAgeInMonths = (birthDate: Date) => {
     const today = new Date();
-    const birthDateObj = new Date(birthDate);
 
-    let ageInMonths = today.getFullYear() * 12 + today.getMonth() - (birthDateObj.getFullYear() * 12 + birthDateObj.getMonth());
+    let ageInMonths = today.getFullYear() * 12 + today.getMonth() - (birthDate.getFullYear() * 12 + birthDate.getMonth());
 
-    if (today.getDate() < birthDateObj.getDate()) {
+    if (today.getDate() < birthDate.getDate()) {
         ageInMonths--;
     }
 

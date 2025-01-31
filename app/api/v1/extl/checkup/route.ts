@@ -19,7 +19,7 @@ export async function POST(request: Request) {
         }
 
         if (gender.toLowerCase() === 'male') {
-            const male = normalStatus.male.find((x) => x.age === calculateAgeInMonths(dateOfBirth));
+            const male = normalStatus.male.find((x) => x.age === calculateAgeInMonths(user.dateOfBirth));
             if (male) {
                 if (male.stunting_threshold > height) {
                     status.push('Stunting');
@@ -33,7 +33,7 @@ export async function POST(request: Request) {
             }
         }
         if (gender.toLowerCase() === 'female') {
-            const female = normalStatus.female.find((x) => x.age === calculateAgeInMonths(dateOfBirth));
+            const female = normalStatus.female.find((x) => x.age === calculateAgeInMonths(user.dateOfBirth));
             if (female) {
                 if (female.stunting_threshold > height) {
                     status.push('Stunting');
@@ -53,7 +53,7 @@ export async function POST(request: Request) {
                 height,
                 weight,
                 headCircumference,
-                age: calculateAgeInMonths(dateOfBirth),
+                age: calculateAgeInMonths(user.dateOfBirth),
                 status: status.join(', '),
                 checkupDate: new Date(),
             },
