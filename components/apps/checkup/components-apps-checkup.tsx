@@ -73,10 +73,10 @@ const Checkup = () => {
                                     return (
                                         <tr key={checkup.id}>
                                             <td>{checkup.member.name}</td>
-                                            <td>{checkup.status}</td>
+                                            <td>{checkup.status || 'Normal'}</td>
                                             <td>{checkup.height}</td>
                                             <td>{checkup.weight}</td>
-                                            <td>{calculateAge(checkup.member.dateOfBirth)}</td>
+                                            <td>{checkup.age} Bulan</td>
                                             <td>{new Date(checkup.checkupDate).toLocaleString()}</td>
                                         </tr>
                                     );

@@ -65,7 +65,7 @@ export async function POST(request: Request) {
                 message: 'Successfully create checkup',
                 data: {
                     name: user.name,
-                    status: status.join(', '),
+                    status: status.length ? status.join(', ') : 'Normal',
                     age: calculateAgeInMonths(user.dateOfBirth),
                     gender: user.gender,
                 },
