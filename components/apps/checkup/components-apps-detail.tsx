@@ -110,9 +110,10 @@ const DetailPemeriksaan = () => {
             )}
 
             {/* Grafik Pertumbuhan Tinggi Badan dan Berat Badan sejajar */}
-            <div className="flex gap-4 mt-5">
+            {/* Grafik Pertumbuhan Tinggi Badan dan Berat Badan */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-5">
                 {/* Grafik Pertumbuhan Tinggi Badan */}
-                <div className="panel p-5 border rounded-lg bg-white shadow-md flex-1">
+                <div className="panel p-5 border rounded-lg bg-white shadow-md">
                     <h3 className="text-lg font-semibold mb-3">Grafik Pertumbuhan Tinggi Badan</h3>
                     <Chart
                         options={{
@@ -127,7 +128,7 @@ const DetailPemeriksaan = () => {
                 </div>
 
                 {/* Grafik Pertumbuhan Berat Badan */}
-                <div className="panel p-5 border rounded-lg bg-white shadow-md flex-1">
+                <div className="panel p-5 border rounded-lg bg-white shadow-md">
                     <h3 className="text-lg font-semibold mb-3">Grafik Pertumbuhan Berat Badan</h3>
                     <Chart
                         options={{
