@@ -7,7 +7,7 @@ import { NextResponse } from 'next/server';
 export async function POST(request: Request) {
     try {
         // const session: SignInResponse = await checkAuth();
-        const { height, weight, headCircumference, dateOfBirth, gender, name, nik } = await request.json();
+        const { height, weight, headCircumference, nik } = await request.json();
         let status = [];
 
         const user = await prisma.member.findUnique({
@@ -18,7 +18,7 @@ export async function POST(request: Request) {
             return NextResponse.json({ success: false, message: 'NIK not found!', error: [] }, { status: 422 });
         }
 
-        if (gender.toLowerCase() === 'male') {
+        if (user.gender.toLowerCase() === 'M') {
             const male = normalStatus.male.find((x) => x.age === calculateAgeInMonths(user.dateOfBirth));
             if (male) {
                 if (male.stunting_threshold > height) {
@@ -32,7 +32,7 @@ export async function POST(request: Request) {
                 }
             }
         }
-        if (gender.toLowerCase() === 'female') {
+        if (user.gender.toLowerCase() === 'F') {
             const female = normalStatus.female.find((x) => x.age === calculateAgeInMonths(user.dateOfBirth));
             if (female) {
                 if (female.stunting_threshold > height) {
@@ -66,7 +66,7 @@ export async function POST(request: Request) {
                 data: {
                     name: user.name,
                     status: status.join(', '),
-                    age: calculateAgeInMonths(dateOfBirth),
+                    age: calculateAgeInMonths(user.dateOfBirth),
                     gender: user.gender,
                 },
             },
