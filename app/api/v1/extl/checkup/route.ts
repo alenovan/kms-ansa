@@ -18,7 +18,7 @@ export async function POST(request: Request) {
             return NextResponse.json({ success: false, message: 'NIK not found!', error: [] }, { status: 422 });
         }
 
-        if (user.gender.toLowerCase() === 'M') {
+        if (user.gender === 'M') {
             const male = normalStatus.male.find((x) => x.age === calculateAgeInMonths(user.dateOfBirth));
             if (male) {
                 if (male.stunting_threshold > height) {
@@ -32,7 +32,7 @@ export async function POST(request: Request) {
                 }
             }
         }
-        if (user.gender.toLowerCase() === 'F') {
+        if (user.gender === 'F') {
             const female = normalStatus.female.find((x) => x.age === calculateAgeInMonths(user.dateOfBirth));
             if (female) {
                 if (female.stunting_threshold > height) {
