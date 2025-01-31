@@ -66,6 +66,8 @@ export async function POST(request: Request) {
                 data: {
                     name: user.name,
                     status: status.join(', '),
+                    age: calculateAgeInMonths(dateOfBirth),
+                    gender: user.gender,
                 },
             },
             { status: 200 },
