@@ -1,11 +1,9 @@
 'use client';
 
 import IconSearch from '@/components/icon/icon-search';
-import { Transition, Dialog, TransitionChild, DialogPanel } from '@headlessui/react';
-import React, { Fragment, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import Swal from 'sweetalert2';
 import axios from 'axios';
-import { calculateAge } from '@/utils/helpers';
 
 const Checkup = () => {
     const [addUserModal, setAddUserModal] = useState(false);

@@ -7,12 +7,14 @@ export async function GET(request: Request) {
         const page = parseInt(url.searchParams.get('page') || '1', 10);
         const pageSize = parseInt(url.searchParams.get('pageSize') || '10', 10);
         const search = url.searchParams.get('search') || '';
+        const nik = url.searchParams.get('nik') || '';
 
         const offset = (page - 1) * pageSize;
 
         const checkups = await prisma.checkup.findMany({
-            // skip: offset,
-            // take: pageSize,
+            where: {
+                ...(nik ? { member: { nik } } : {}), // Filter by NIK if provided
+            },
             orderBy: {
                 createdAt: 'desc',
             },
@@ -20,7 +22,9 @@ export async function GET(request: Request) {
         });
 
         const totalCheckup = await prisma.checkup.count({
-            where: {},
+            where: {
+                ...(nik ? { member: { nik } } : {}),
+            },
         });
 
         const totalPages = Math.ceil(totalCheckup / pageSize);

@@ -12,6 +12,7 @@ import { Transition, Dialog, TransitionChild, DialogPanel } from '@headlessui/re
 import React, { Fragment, useEffect, useState } from 'react';
 import Swal from 'sweetalert2';
 import axios from 'axios';
+import Link from 'next/link';
 
 const ComponentsAppsUsers = () => {
     const [addUserModal, setAddUserModal] = useState(false);
@@ -168,9 +169,11 @@ const ComponentsAppsUsers = () => {
                                             <td>{contact.motherName}</td>
                                             <td>
                                                 <div className="flex items-center justify-center gap-4">
-                                                    <button type="button" className="btn btn-sm btn-outline-primary" onClick={() => editUser(contact)}>
-                                                        Riwayat Checkup
-                                                    </button>
+                                                    <Link href={`/checkup/${contact.nik}`} passHref>
+                                                        <button type="button" className="btn btn-sm btn-outline-primary">
+                                                            Riwayat Checkup
+                                                        </button>
+                                                    </Link>
                                                     <button type="button" className="btn btn-sm btn-outline-primary" onClick={() => editUser(contact)}>
                                                         Edit
                                                     </button>
