@@ -56,6 +56,7 @@ export async function POST(request: Request) {
                 age: calculateAgeInMonths(user.dateOfBirth),
                 status: status.join(', '),
                 checkupDate: new Date(),
+                posyanduId: user.posyanduId,
             },
         });
 

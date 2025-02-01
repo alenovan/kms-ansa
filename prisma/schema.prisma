@@ -113,6 +113,12 @@ model Puskesmas {
   name          String
   address       String
 
+  province      Province @relation(fields: [provinceId], references: [id])
+  city          City @relation(fields: [cityId], references: [id])
+  subdistrict   SubDistrict @relation(fields: [subDistrictId], references: [id])
+  village       Village @relation(fields: [villageId], references: [id])
+  posyandu      Posyandu[]
+
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 }
@@ -123,6 +129,8 @@ model Posyandu {
   name          String
   address       String
 
+  puskesmas     Puskesmas @relation(fields: [puskesmasId], references: [id])
+
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 }
@@ -130,6 +138,8 @@ model Posyandu {
 model Province {
   id            String @id @default(cuid())
   name          String
+  
+  puskesmas     Puskesmas[]
 
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
@@ -140,6 +150,8 @@ model City {
   provinceId    String
   name          String
 
+  puskesmas     Puskesmas[]
+
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 }
@@ -149,6 +161,7 @@ model SubDistrict {
   provinceId    String
   cityId        String
   name          String
+  puskesmas     Puskesmas[]
 
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
@@ -160,6 +173,7 @@ model Village {
   cityId        String
   subDistrictId String
   name          String
+  puskesmas     Puskesmas[]
 
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
@@ -172,10 +186,12 @@ model Member {
   gender        Gender @default(M)
   dateOfBirth   DateTime
   motherName    String
+  posyanduId    String @default("")
+
+  checkups      Checkup[]
 
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
-  checkups      Checkup[]
 }
 
 model MedicalRecord {
@@ -191,6 +207,7 @@ model MedicalRecord {
 model Checkup {
   id                  String @id @default(cuid())
   memberId            String
+  posyanduId          String @default("")
   height              Float
   weight              Float
   headCircumference   Float

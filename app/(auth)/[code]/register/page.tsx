@@ -1,13 +1,18 @@
-import ComponentsAuthLoginForm from '@/components/auth/components-auth-login-form';
+import ComponentsAuthRegisterForm from '@/components/auth/components-auth-register-form';
+import IconFacebookCircle from '@/components/icon/icon-facebook-circle';
+import IconGoogle from '@/components/icon/icon-google';
+import IconInstagram from '@/components/icon/icon-instagram';
+import IconTwitter from '@/components/icon/icon-twitter';
+import LanguageDropdown from '@/components/language-dropdown';
 import { Metadata } from 'next';
 import Link from 'next/link';
 import React from 'react';
 
 export const metadata: Metadata = {
-    title: 'Login Boxed',
+    title: 'Register Boxed',
 };
 
-const BoxedSignIn = () => {
+const BoxedSignUp = () => {
     return (
         <div>
             <div className="absolute inset-0">
@@ -19,14 +24,14 @@ const BoxedSignIn = () => {
                     <div className="relative flex flex-col justify-center rounded-md bg-white/60 px-6 py-20 backdrop-blur-lg dark:bg-black/50 lg:min-h-[758px]">
                         <div className="mx-auto w-full max-w-[440px]">
                             <div className="mb-10">
-                                <h1 className="text-3xl font-extrabold uppercase !leading-snug text-primary md:text-4xl">Sign in</h1>
-                                <p className="text-base font-bold leading-normal text-white-dark">Enter your email and password to login</p>
+                                <h1 className="text-3xl font-extrabold uppercase !leading-snug text-primary md:text-4xl">Sign Up</h1>
+                                <p className="text-base font-bold leading-normal text-white-dark">Enter your email and password to register</p>
                             </div>
-                            <ComponentsAuthLoginForm />
+                            <ComponentsAuthRegisterForm />
                             <div className="text-center dark:text-white hidden">
-                                Don&apos;t have an account ?&nbsp;
-                                <Link href="/auth/boxed-signup" className="uppercase text-primary underline transition hover:text-black dark:hover:text-white">
-                                    SIGN UP
+                                Already have an account ?&nbsp;
+                                <Link href="/auth/boxed-signin" className="uppercase text-primary underline transition hover:text-black dark:hover:text-white">
+                                    SIGN IN
                                 </Link>
                             </div>
                         </div>
@@ -37,4 +42,4 @@ const BoxedSignIn = () => {
     );
 };
 
-export default BoxedSignIn;
+export default BoxedSignUp;
