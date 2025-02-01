@@ -6,8 +6,8 @@ export const metadata: Metadata = {
     title: 'Puskesmas',
 };
 
-const Contacts = () => {
+const Puskesmas = () => {
     return <PuskesmasApps />;
 };
 
-export default Contacts;
+export default Puskesmas;

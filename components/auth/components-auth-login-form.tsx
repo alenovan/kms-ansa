@@ -1,22 +1,38 @@
 'use client';
+
 import IconLockDots from '@/components/icon/icon-lock-dots';
 import IconMail from '@/components/icon/icon-mail';
-import { useRouter } from 'next/navigation';
+import { useFormMutation } from '@/hooks/useFormMutation';
+import { signInAction } from '@/services/auth';
+import { useRouter, useSearchParams } from 'next/navigation';
 import React from 'react';
 
 const ComponentsAuthLoginForm = () => {
     const router = useRouter();
-    const submitForm = (e: any) => {
-        e.preventDefault();
-        router.push('/dashboard');
-    };
+    const query = useSearchParams();
+
+    const { isPending, handleFormSubmit, error } = useFormMutation({
+        actions: async (formData) => {
+            const callbackUrl = query.get('callbackUrl') || '/dashboard';
+
+            const res = await signInAction(formData, callbackUrl, false);
+
+            if (res?.message) {
+                router.push(callbackUrl);
+                return false;
+            }
+
+            return res;
+        },
+        successMessage: null,
+    });
 
     return (
-        <form className="space-y-5 dark:text-white" onSubmit={submitForm}>
+        <form className="space-y-5 dark:text-white" onSubmit={handleFormSubmit}>
             <div>
                 <label htmlFor="Email">Email</label>
                 <div className="relative text-white-dark">
-                    <input id="Email" type="email" placeholder="Enter Email" className="form-input ps-10 placeholder:text-white-dark" />
+                    <input id="Email" name="email" type="email" placeholder="Enter Email" className="form-input ps-10 placeholder:text-white-dark" />
                     <span className="absolute start-4 top-1/2 -translate-y-1/2">
                         <IconMail fill={true} />
                     </span>
@@ -25,7 +41,7 @@ const ComponentsAuthLoginForm = () => {
             <div>
                 <label htmlFor="Password">Password</label>
                 <div className="relative text-white-dark">
-                    <input id="Password" type="password" placeholder="Enter Password" className="form-input ps-10 placeholder:text-white-dark" />
+                    <input id="Password" name="password" type="password" placeholder="Enter Password" className="form-input ps-10 placeholder:text-white-dark" />
                     <span className="absolute start-4 top-1/2 -translate-y-1/2">
                         <IconLockDots fill={true} />
                     </span>

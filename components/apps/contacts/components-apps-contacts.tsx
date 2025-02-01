@@ -1,11 +1,6 @@
 'use client';
 
-import IconFacebook from '@/components/icon/icon-facebook';
-import IconInstagram from '@/components/icon/icon-instagram';
-import IconLinkedin from '@/components/icon/icon-linkedin';
 import IconSearch from '@/components/icon/icon-search';
-import IconTwitter from '@/components/icon/icon-twitter';
-import IconUser from '@/components/icon/icon-user';
 import IconUserPlus from '@/components/icon/icon-user-plus';
 import IconX from '@/components/icon/icon-x';
 import { Transition, Dialog, TransitionChild, DialogPanel } from '@headlessui/react';
@@ -131,10 +126,10 @@ const ComponentsAppsUsers = () => {
                 <div className="flex w-full flex-col gap-4 sm:w-auto sm:flex-row sm:items-center sm:gap-3">
                     <div className="flex gap-3">
                         <div>
-                            <button type="button" className="btn btn-primary" onClick={() => editUser()}>
+                            {/* <button type="button" className="btn btn-primary" onClick={() => editUser()}>
                                 <IconUserPlus className="ltr:mr-2 rtl:ml-2" />
                                 Tambah Peserta
-                            </button>
+                            </button> */}
                         </div>
                     </div>
                     <div className="relative">
