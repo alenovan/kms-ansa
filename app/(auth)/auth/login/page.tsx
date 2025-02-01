@@ -19,16 +19,10 @@ const BoxedSignIn = () => {
                     <div className="relative flex flex-col justify-center rounded-md bg-white/60 px-6 py-20 backdrop-blur-lg dark:bg-black/50 lg:min-h-[758px]">
                         <div className="mx-auto w-full max-w-[440px]">
                             <div className="mb-10">
-                                <h1 className="text-3xl font-extrabold uppercase !leading-snug text-primary md:text-4xl">Sign in</h1>
-                                <p className="text-base font-bold leading-normal text-white-dark">Enter your email and password to login</p>
+                                <h1 className="text-3xl font-extrabold uppercase !leading-snug text-primary md:text-4xl">Login</h1>
+                                <p className="text-base font-bold leading-normal text-white-dark">Silahkan login menggunakan email dan password anda</p>
                             </div>
                             <ComponentsAuthLoginForm />
-                            <div className="text-center dark:text-white hidden">
-                                Don&apos;t have an account ?&nbsp;
-                                <Link href="/auth/boxed-signup" className="uppercase text-primary underline transition hover:text-black dark:hover:text-white">
-                                    SIGN UP
-                                </Link>
-                            </div>
                         </div>
                     </div>
                 </div>
