@@ -95,7 +95,7 @@ const PosyanduApps = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {list.map((x: any) => {
+                            {list?.map((x: any) => {
                                 return (
                                     <tr key={x.id}>
                                         <td>{x.name}</td>
@@ -187,7 +187,7 @@ const PosyanduApps = () => {
                                         <form onSubmit={handleFormSubmit}>
                                             <div className="mb-5">
                                                 <label htmlFor="puskesmasId">Puskesmas</label>
-                                                <Select defaultValue={puskesmas.find((x: any) => x.value === initialValues.puskesmasId)} options={puskesmas} name="puskesmasId" isSearchable={false} />
+                                                <Select defaultValue={puskesmas?.find((x: any) => x.value === initialValues.puskesmasId)} options={puskesmas} name="puskesmasId" isSearchable={false} />
                                             </div>
                                             <div className="mb-5">
                                                 <label htmlFor="name">Nama</label>

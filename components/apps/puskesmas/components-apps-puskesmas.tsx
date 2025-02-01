@@ -116,7 +116,7 @@ const PuskesmasApps = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {list.map((x: any) => {
+                            {list?.map((x: any) => {
                                 return (
                                     <tr key={x.id}>
                                         <td>{x.name}</td>

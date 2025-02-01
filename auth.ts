@@ -36,7 +36,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             authorize: async (credentials) => {
                 const { email, password } = await signInSchema.parseAsync(credentials);
                 const user = await getUserByEmail(email);
-
                 if (user?.password === hashPassword(password)) {
                     return user;
                 }
@@ -52,9 +51,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             const protectedPaths = ['/dashboard', '/users', '/checkup', '/puskesmas', '/posyandu'];
             const isProtected = protectedPaths.some((path) => nextUrl.pathname.startsWith(path));
 
-            const publicPath = ['/auth'];
-            const isPublic = publicPath.some((path) => nextUrl.pathname.startsWith(path));
-
+            // If trying to access a protected route without being logged in, redirect to login
             if (isProtected && !loggedIn) {
                 const redirectUrl = new URL('/auth/login', nextUrl.origin);
                 redirectUrl.searchParams.append('callbackUrl', nextUrl.pathname);
@@ -62,6 +59,9 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                 return Response.redirect(redirectUrl);
             }
 
+            // If trying to access a public route but already logged in, redirect to dashboard
+            const publicPath = ['/auth'];
+            const isPublic = publicPath.some((path) => nextUrl.pathname.startsWith(path));
             if (isPublic && loggedIn) {
                 return Response.redirect(new URL('/dashboard', nextUrl.origin));
             }
@@ -70,9 +70,9 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         },
 
         async jwt({ token }) {
+            // If a session token is found, fetch user data to include it in the token
             if (token.sub) {
                 const data = await getUser(token.sub);
-
                 if (data) {
                     return {
                         ...token,
@@ -84,6 +84,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         },
 
         async session({ session, token }) {
+            // Attach additional user information to session
             return {
                 ...session,
                 user: {

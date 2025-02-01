@@ -194,14 +194,19 @@ model Member {
   updatedAt     DateTime @updatedAt
 }
 
+
+
 model MedicalRecord {
-  id            String @id @default(cuid())
+  id            String  @id @default(cuid())
   memberId      String
+  checkupId     String  // Add this field for relation
   diagnosis     String
   treatment     String
 
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
+
+  checkup       Checkup @relation(fields: [checkupId], references: [id]) // Define relation
 }
 
 model Checkup {
@@ -217,9 +222,11 @@ model Checkup {
 
   createdAt           DateTime @default(now())
   updatedAt           DateTime @updatedAt
-  
-  member              Member  @relation(fields: [memberId], references: [id])
+
+  member              Member         @relation(fields: [memberId], references: [id])
+  medicalRecords      MedicalRecord[] // Define relation back to MedicalRecord
 }
+
 
 enum Gender {
   M

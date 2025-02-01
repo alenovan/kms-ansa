@@ -1,477 +1,173 @@
 'use client';
-import Dropdown from '@/components/dropdown';
-import IconCaretsDown from '@/components/icon/icon-carets-down';
-import IconChatDots from '@/components/icon/icon-chat-dots';
-import IconChecks from '@/components/icon/icon-checks';
-import IconChrome from '@/components/icon/icon-chrome';
-import IconClock from '@/components/icon/icon-clock';
-import IconCreditCard from '@/components/icon/icon-credit-card';
-import IconFile from '@/components/icon/icon-file';
-import IconGlobe from '@/components/icon/icon-globe';
-import IconHorizontalDots from '@/components/icon/icon-horizontal-dots';
-import IconLink from '@/components/icon/icon-link';
-import IconMail from '@/components/icon/icon-mail';
-import IconPlus from '@/components/icon/icon-plus';
-import IconSafari from '@/components/icon/icon-safari';
-import IconServer from '@/components/icon/icon-server';
-import IconSquareCheck from '@/components/icon/icon-square-check';
-import IconThumbUp from '@/components/icon/icon-thumb-up';
-import IconTrendingUp from '@/components/icon/icon-trending-up';
-import IconUsersGroup from '@/components/icon/icon-users-group';
+import React, { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 import { IRootState } from '@/store';
 import Link from 'next/link';
-import React, { useEffect, useState } from 'react';
 import ReactApexChart from 'react-apexcharts';
-import { useSelector } from 'react-redux';
-import PerfectScrollbar from 'react-perfect-scrollbar';
+import axios from 'axios';
 
 const ComponentsDashboardAnalytics = () => {
-    const isDark = useSelector((state: IRootState) => state.themeConfig.theme === 'dark' || state.themeConfig.isDarkMode);
-    const isRtl = useSelector((state: IRootState) => state.themeConfig.rtlClass) === 'rtl';
-    const [isMounted, setIsMounted] = useState(false);
+    const [dataCheckup, setDataCheckup] = useState<any>([]);
+
+    const [chartBerat, setChartBerat] = useState<any>(null);
+    const [chartTinggi, setChartTinggi] = useState<any>(null);
+    const [chartGender, setChartGender] = useState<any>(null);
+    const [chartBulanan, setChartBulanan] = useState<any>(null);
+    const [chartStatus, setChartStatus] = useState<any>(null);
+
+    const fetchDataCheckup = async () => {
+        try {
+            const response = await axios.get('/api/v1/intl/checkup');
+            setDataCheckup(response.data.data);
+            prosesDataGrafik(response.data.data);
+        } catch (error) {
+            // showPesan('Gagal memuat data checkup', 'error');
+        }
+    };
+
     useEffect(() => {
-        setIsMounted(true);
+        fetchDataCheckup();
     }, []);
 
-    // totalVisitOptions
-    const totalVisit: any = {
-        series: [{ data: [21, 9, 36, 12, 44, 25, 59, 41, 66, 25] }],
-        options: {
-            chart: {
-                height: 58,
-                type: 'line',
-                fontFamily: 'Nunito, sans-serif',
-                sparkline: {
-                    enabled: true,
-                },
-                dropShadow: {
-                    enabled: true,
-                    blur: 3,
-                    color: '#009688',
-                    opacity: 0.4,
-                },
+    const prosesDataGrafik = (data: any) => {
+        const dataTersortir = data.sort((a: any, b: any) => new Date(a.checkupDate).getTime() - new Date(b.checkupDate).getTime());
+        const tanggalCheckup = dataTersortir.map((item: any) => new Date(item.checkupDate).toLocaleDateString());
+        const nilaiBerat = dataTersortir.map((item: any) => item.weight);
+        const nilaiTinggi = dataTersortir.map((item: any) => item.height);
+
+        setChartBerat({
+            series: [{ name: 'Berat Badan (kg)', data: nilaiBerat }],
+            options: {
+                chart: { type: 'line' },
+                xaxis: { categories: tanggalCheckup },
+                title: { text: '' },
             },
-            stroke: {
-                curve: 'smooth',
-                width: 2,
+        });
+
+        setChartTinggi({
+            series: [{ name: 'Tinggi Badan (cm)', data: nilaiTinggi }],
+            options: {
+                chart: { type: 'line' },
+                xaxis: { categories: tanggalCheckup },
+                title: { text: '' },
             },
-            colors: ['#009688'],
-            grid: {
-                padding: {
-                    top: 5,
-                    bottom: 5,
-                    left: 5,
-                    right: 5,
-                },
+        });
+
+        const genderCount = data.reduce((acc: any, item: any) => {
+            const gender = item.member.gender === 'F' ? 'Perempuan' : 'Laki-laki';
+            acc[gender] = (acc[gender] || 0) + 1;
+            return acc;
+        }, {});
+
+        setChartGender({
+            series: Object.values(genderCount),
+            options: {
+                chart: { type: 'pie' },
+                labels: Object.keys(genderCount),
+                title: { text: '    ' },
             },
-            tooltip: {
-                x: {
-                    show: false,
-                },
-                y: {
-                    title: {
-                        formatter: () => {
-                            return '';
-                        },
-                    },
-                },
+        });
+
+        const jumlahBulanan = data.reduce((acc: any, item: any) => {
+            const bulan = new Date(item.createdAt).toLocaleString('id-ID', { month: 'short', year: 'numeric' });
+            acc[bulan] = (acc[bulan] || 0) + 1;
+            return acc;
+        }, {});
+
+        setChartBulanan({
+            series: [{ name: 'Checkup', data: Object.values(jumlahBulanan) }],
+            options: {
+                chart: { type: 'bar' },
+                xaxis: { categories: Object.keys(jumlahBulanan) },
+                title: { text: '' },
             },
-        },
+        });
+
+        // Menambahkan penghitungan untuk status anak: Stunting, Gizi Buruk, Obesitas, dan Normal
+        const statusCount = data.reduce((acc: any, item: any) => {
+            // Memecah status yang mungkin terdiri dari beberapa bagian seperti "Stunting, Obesitas"
+            const statuses = item.status ? item.status.split(', ') : ['Normal']; // Jika tidak ada status, dianggap 'Normal'
+        
+            statuses.forEach((status: string) => {
+                acc[status] = (acc[status] || 0) + 1;
+            });
+        
+            return acc;
+        }, {});
+        
+        const statusColors: { [key: string]: string } = {
+            'Normal': '#28a745',      // Green for 'Normal'
+            'Stunting': '#dc3545',    // Red for 'Stunting'
+            'Gizi Buruk': '#fd7e14',  // Orange for 'Gizi Buruk'
+            'Obesitas': '#007bff',    // Blue for 'Obesitas'
+        };
+        
+        // Assign colors dynamically based on the status labels
+        const chartColors = Object.keys(statusCount).map(status => statusColors[status] || '#6c757d'); // Default to gray if status not mapped
+        
+        setChartStatus({
+            series: Object.values(statusCount),
+            options: {
+                chart: { type: 'pie' },
+                labels: Object.keys(statusCount),
+                colors: chartColors, // Apply custom colors
+                title: { text: '' },
+            },
+        });
+        
     };
-    // paidVisitOptions
-    const paidVisit: any = {
-        series: [{ data: [22, 19, 30, 47, 32, 44, 34, 55, 41, 69] }],
-        options: {
-            chart: {
-                height: 58,
-                type: 'line',
-                fontFamily: 'Nunito, sans-serif',
-                sparkline: {
-                    enabled: true,
-                },
-                dropShadow: {
-                    enabled: true,
-                    blur: 3,
-                    color: '#e2a03f',
-                    opacity: 0.4,
-                },
-            },
-            stroke: {
-                curve: 'smooth',
-                width: 2,
-            },
-            colors: ['#e2a03f'],
-            grid: {
-                padding: {
-                    top: 5,
-                    bottom: 5,
-                    left: 5,
-                    right: 5,
-                },
-            },
-            tooltip: {
-                x: {
-                    show: false,
-                },
-                y: {
-                    title: {
-                        formatter: () => {
-                            return '';
-                        },
-                    },
-                },
-            },
-        },
-    };
-    // uniqueVisitorSeriesOptions
-    const uniqueVisitorSeries: any = {
-        series: [
-            {
-                name: 'Direct',
-                data: [58, 44, 55, 57, 56, 61, 58, 63, 60, 66, 56, 63],
-            },
-            {
-                name: 'Organic',
-                data: [91, 76, 85, 101, 98, 87, 105, 91, 114, 94, 66, 70],
-            },
-        ],
-        options: {
-            chart: {
-                height: 360,
-                type: 'bar',
-                fontFamily: 'Nunito, sans-serif',
-                toolbar: {
-                    show: false,
-                },
-            },
-            dataLabels: {
-                enabled: false,
-            },
-            stroke: {
-                width: 2,
-                colors: ['transparent'],
-            },
-            colors: ['#5c1ac3', '#ffbb44'],
-            dropShadow: {
-                enabled: true,
-                blur: 3,
-                color: '#515365',
-                opacity: 0.4,
-            },
-            plotOptions: {
-                bar: {
-                    horizontal: false,
-                    columnWidth: '55%',
-                    borderRadius: 8,
-                    borderRadiusApplication: 'end',
-                },
-            },
-            legend: {
-                position: 'bottom',
-                horizontalAlign: 'center',
-                fontSize: '14px',
-                itemMargin: {
-                    horizontal: 8,
-                    vertical: 8,
-                },
-            },
-            grid: {
-                borderColor: isDark ? '#191e3a' : '#e0e6ed',
-                padding: {
-                    left: 20,
-                    right: 20,
-                },
-            },
-            xaxis: {
-                categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-                axisBorder: {
-                    show: true,
-                    color: isDark ? '#3b3f5c' : '#e0e6ed',
-                },
-            },
-            yaxis: {
-                tickAmount: 6,
-                opposite: isRtl ? true : false,
-                labels: {
-                    offsetX: isRtl ? -10 : 0,
-                },
-            },
-            fill: {
-                type: 'gradient',
-                gradient: {
-                    shade: isDark ? 'dark' : 'light',
-                    type: 'vertical',
-                    shadeIntensity: 0.3,
-                    inverseColors: false,
-                    opacityFrom: 1,
-                    opacityTo: 0.8,
-                    stops: [0, 100],
-                },
-            },
-            tooltip: {
-                marker: {
-                    show: true,
-                },
-            },
-        },
-    };
-    // followersOptions
-    const followers: any = {
-        series: [
-            {
-                data: [38, 60, 38, 52, 36, 40, 28],
-            },
-        ],
-        options: {
-            chart: {
-                height: 160,
-                type: 'area',
-                fontFamily: 'Nunito, sans-serif',
-                sparkline: {
-                    enabled: true,
-                },
-            },
-            stroke: {
-                curve: 'smooth',
-                width: 2,
-            },
-            colors: ['#4361ee'],
-            grid: {
-                padding: {
-                    top: 5,
-                },
-            },
-            yaxis: {
-                show: false,
-            },
-            tooltip: {
-                x: {
-                    show: false,
-                },
-                y: {
-                    title: {
-                        formatter: () => {
-                            return '';
-                        },
-                    },
-                },
-            },
-        },
-    };
-    // referralOptions
-    const referral: any = {
-        series: [
-            {
-                data: [60, 28, 52, 38, 40, 36, 38],
-            },
-        ],
-        options: {
-            chart: {
-                height: 160,
-                type: 'area',
-                fontFamily: 'Nunito, sans-serif',
-                sparkline: {
-                    enabled: true,
-                },
-            },
-            stroke: {
-                curve: 'smooth',
-                width: 2,
-            },
-            colors: ['#e7515a'],
-            grid: {
-                padding: {
-                    top: 5,
-                },
-            },
-            yaxis: {
-                show: false,
-            },
-            tooltip: {
-                x: {
-                    show: false,
-                },
-                y: {
-                    title: {
-                        formatter: () => {
-                            return '';
-                        },
-                    },
-                },
-            },
-        },
-    };
-    // engagementOptions
-    const engagement: any = {
-        series: [
-            {
-                name: 'Sales',
-                data: [28, 50, 36, 60, 38, 52, 38],
-            },
-        ],
-        options: {
-            chart: {
-                height: 160,
-                type: 'area',
-                fontFamily: 'Nunito, sans-serif',
-                sparkline: {
-                    enabled: true,
-                },
-            },
-            stroke: {
-                curve: 'smooth',
-                width: 2,
-            },
-            colors: ['#1abc9c'],
-            grid: {
-                padding: {
-                    top: 5,
-                },
-            },
-            yaxis: {
-                show: false,
-            },
-            tooltip: {
-                x: {
-                    show: false,
-                },
-                y: {
-                    title: {
-                        formatter: () => {
-                            return '';
-                        },
-                    },
-                },
-            },
-        },
-    };
+
+    const isDark = useSelector((state: IRootState) => state.themeConfig.theme === 'dark' || state.themeConfig.isDarkMode);
+
     return (
         <div>
             <ul className="flex space-x-2 rtl:space-x-reverse">
                 <li>
                     <Link href="/" className="text-primary hover:underline">
-                        Dashboard
+                        Beranda
                     </Link>
                 </li>
             </ul>
-            <div className="pt-5">
-                <div className="mb-6 grid gap-6 sm:grid-cols-3 xl:grid-cols-5">
-                    <div className="panel h-full sm:col-span-3 xl:col-span-2">
-                        <div className="mb-5 flex items-start justify-between">
-                            <h5 className="text-lg font-semibold dark:text-white-light">Visitors</h5>
-                        </div>
-                        <div className="flex flex-col space-y-5">
-                            <div className="flex items-center">
-                                <div className="h-9 w-9">
-                                    <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary/10 text-primary dark:bg-primary dark:text-white-light">
-                                        <IconChrome className="h-5 w-5" />
-                                    </div>
-                                </div>
-                                <div className="w-full flex-initial px-3">
-                                    <div className="w-summary-info mb-1 flex justify-between font-semibold text-white-dark">
-                                        <h6>Chrome</h6>
-                                        <p className="text-xs ltr:ml-auto rtl:mr-auto">65%</p>
-                                    </div>
-                                    <div>
-                                        <div className="h-5 w-full overflow-hidden rounded-full bg-dark-light p-1 shadow-3xl dark:bg-dark-light/10 dark:shadow-none">
-                                            <div
-                                                className="relative h-full w-full rounded-full bg-gradient-to-r from-[#009ffd] to-[#2a2a72] before:absolute before:inset-y-0 before:m-auto before:h-2 before:w-2 before:rounded-full before:bg-white ltr:before:right-0.5 rtl:before:left-0.5"
-                                                style={{ width: '65%' }}
-                                            ></div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="flex items-center">
-                                <div className="h-9 w-9">
-                                    <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-danger/10 text-danger dark:bg-danger dark:text-white-light">
-                                        <IconSafari className="h-5 w-5" />
-                                    </div>
-                                </div>
-                                <div className="w-full flex-initial px-3">
-                                    <div className="w-summary-info mb-1 flex justify-between font-semibold text-white-dark">
-                                        <h6>Safari</h6>
-                                        <p className="text-xs ltr:ml-auto rtl:mr-auto">40%</p>
-                                    </div>
-                                    <div>
-                                        <div className="h-5 w-full overflow-hidden rounded-full bg-dark-light p-1 shadow-3xl dark:bg-dark-light/10 dark:shadow-none">
-                                            <div
-                                                className="relative h-full w-full rounded-full bg-gradient-to-r from-[#a71d31] to-[#3f0d12] before:absolute before:inset-y-0 before:m-auto before:h-2 before:w-2 before:rounded-full before:bg-white ltr:before:right-0.5 rtl:before:left-0.5"
-                                                style={{ width: '40%' }}
-                                            ></div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="flex items-center">
-                                <div className="h-9 w-9">
-                                    <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-warning/10 text-warning dark:bg-warning dark:text-white-light">
-                                        <IconGlobe className="h-5 w-5" />
-                                    </div>
-                                </div>
-                                <div className="w-full flex-initial px-3">
-                                    <div className="w-summary-info mb-1 flex justify-between font-semibold text-white-dark">
-                                        <h6>Others</h6>
-                                        <p className="text-xs ltr:ml-auto rtl:mr-auto">25%</p>
-                                    </div>
-                                    <div>
-                                        <div className="h-5 w-full overflow-hidden rounded-full bg-dark-light p-1 shadow-3xl dark:bg-dark-light/10 dark:shadow-none">
-                                            <div
-                                                className="relative h-full w-full rounded-full bg-gradient-to-r from-[#fe5f75] to-[#fc9842] before:absolute before:inset-y-0 before:m-auto before:h-2 before:w-2 before:rounded-full before:bg-white ltr:before:right-0.5 rtl:before:left-0.5"
-                                                style={{ width: '25%' }}
-                                            ></div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+            <div className="pt-5 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+                {/* Kartu Grafik Pertumbuhan Berat Badan */}
+                {chartBerat && (
+                    <div className="bg-white dark:bg-gray-800 shadow-lg rounded-lg p-6">
+                        <h3 className="text-xl font-semibold mb-4">Pertumbuhan Berat Badan</h3>
+                        <ReactApexChart options={chartBerat.options} series={chartBerat.series} type="line" height={350} />
                     </div>
+                )}
 
-                    <div className="panel h-full p-0">
-                        <div className="flex p-5">
-                            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary dark:bg-primary dark:text-white-light">
-                                <IconUsersGroup className="h-5 w-5" />
-                            </div>
-                            <div className="font-semibold ltr:ml-3 rtl:mr-3">
-                                <p className="text-xl dark:text-white-light">31.6K</p>
-                                <h5 className="text-xs text-[#506690]">Stunting</h5>
-                            </div>
-                        </div>
-                        <div className="h-40">
-                            {isMounted && <ReactApexChart series={followers.series} options={followers.options} type="area" height={160} width={'100%'} className="absolute bottom-0 w-full" />}
-                        </div>
+                {/* Kartu Grafik Pertumbuhan Tinggi Badan */}
+                {chartTinggi && (
+                    <div className="bg-white dark:bg-gray-800 shadow-lg rounded-lg p-6">
+                        <h3 className="text-xl font-semibold mb-4">Pertumbuhan Tinggi Badan</h3>
+                        <ReactApexChart options={chartTinggi.options} series={chartTinggi.series} type="line" height={350} />
                     </div>
+                )}
 
-                    <div className="panel h-full p-0">
-                        <div className="flex p-5">
-                            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-danger/10 text-danger dark:bg-danger dark:text-white-light">
-                                <IconLink className="h-5 w-5" />
-                            </div>
-                            <div className="font-semibold ltr:ml-3 rtl:mr-3">
-                                <p className="text-xl dark:text-white-light">1,900</p>
-                                <h5 className="text-xs text-[#506690]">Gizi Buruk</h5>
-                            </div>
-                        </div>
-                        <div className="h-40">
-                            {isMounted && <ReactApexChart series={referral.series} options={referral.options} type="area" height={160} width={'100%'} className="absolute bottom-0 w-full" />}
-                        </div>
+                {/* Kartu Grafik Distribusi Jenis Kelamin */}
+                {chartGender && (
+                    <div className="bg-white dark:bg-gray-800 shadow-lg rounded-lg p-6">
+                        <h3 className="text-xl font-semibold mb-4">Distribusi Jenis Kelamin</h3>
+                        <ReactApexChart options={chartGender.options} series={chartGender.series} type="pie" height={350} />
                     </div>
+                )}
 
-                    <div className="panel h-full p-0">
-                        <div className="flex p-5">
-                            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-success/10 text-success dark:bg-success dark:text-white-light">
-                                <IconChatDots className="h-5 w-5" />
-                            </div>
-                            <div className="font-semibold ltr:ml-3 rtl:mr-3">
-                                <p className="text-xl dark:text-white-light">18</p>
-                                <h5 className="text-xs text-[#506690]">Posyandu</h5>
-                            </div>
-                        </div>
-                        <div className="h-40">
-                            {isMounted && <ReactApexChart series={engagement.series} options={engagement.options} type="area" height={160} width={'100%'} className="absolute bottom-0 w-full" />}
-                        </div>
+                {/* Kartu Grafik Jumlah Checkup Per Bulan */}
+                {chartBulanan && (
+                    <div className="bg-white dark:bg-gray-800 shadow-lg rounded-lg p-6">
+                        <h3 className="text-xl font-semibold mb-4">Jumlah Checkup Per Bulan</h3>
+                        <ReactApexChart options={chartBulanan.options} series={chartBulanan.series} type="bar" height={350} />
                     </div>
-                </div>
+                )}
+
+                {/* Kartu Grafik Distribusi Status Anak */}
+                {chartStatus && (
+                    <div className="bg-white dark:bg-gray-800 shadow-lg rounded-lg p-6">
+                        <h3 className="text-xl font-semibold mb-4">Distribusi Status Kesehatan</h3>
+                        <ReactApexChart options={chartStatus.options} series={chartStatus.series} type="pie" height={350} />
+                    </div>
+                )}
             </div>
         </div>
     );

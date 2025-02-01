@@ -29,6 +29,14 @@ export const memberSchema = object({
     posyanduId: string({ required_error: 'Posyandu is required' }).trim().min(1, 'Posyandu is required'),
 });
 
+export const medicalRecordSchema = z.object({
+    memberId: z.string().min(1, 'Member ID is required'),
+    checkupId: z.string().min(1, 'Checkup ID is required'),
+    diagnosis: z.string().min(1, 'Diagnosis is required'),
+    treatment: z.string().min(1, 'Treatment is required'),
+});
+
+export type MedicalRecordType = z.infer<typeof medicalRecordSchema>;
 export type SignInType = z.infer<typeof signInSchema>;
 export type PuskesmasType = z.infer<typeof puskesmasSchema>;
 export type PosyanduType = z.infer<typeof posyanduSchema>;

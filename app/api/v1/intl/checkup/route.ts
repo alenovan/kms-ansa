@@ -18,7 +18,7 @@ export async function GET(request: Request) {
             orderBy: {
                 createdAt: 'desc',
             },
-            include: { member: true },
+            include: { member: true, medicalRecords: true },
         });
 
         const totalCheckup = await prisma.checkup.count({

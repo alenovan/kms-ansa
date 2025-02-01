@@ -8,6 +8,7 @@ import React, { Fragment, useEffect, useState } from 'react';
 import Swal from 'sweetalert2';
 import axios from 'axios';
 import Link from 'next/link';
+import { deleteMember } from '@/services/member';
 
 const ComponentsAppsUsers = () => {
     const [addUserModal, setAddUserModal] = useState(false);
@@ -96,13 +97,23 @@ const ComponentsAppsUsers = () => {
     };
 
     const deleteUser = async (user: any) => {
-        try {
-            await axios.delete(`/api/v1/intl/member/${user.id}`); // Delete API endpoint
-            setFilteredItems(filteredItems.data.filter((d: any) => d.id !== user.id));
-            showMessage('User deleted successfully.');
-        } catch (error) {
-            showMessage('Failed to delete user', 'error');
-        }
+        Swal.fire({
+            icon: 'warning',
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            showCancelButton: true,
+            confirmButtonText: 'Delete',
+            padding: '2em',
+            customClass: { popup: 'sweet-alerts' },
+        }).then(async (result) => {
+            if (result.value) {
+                const data = await deleteMember(user.id);
+                if (data.success) {
+                    Swal.fire({ title: 'Deleted!', text: 'Your file has been deleted.', icon: 'success', customClass: { popup: 'sweet-alerts' } });
+                    fetchUsers();
+                }
+            }
+        });
     };
 
     const showMessage = (msg = '', type = 'success') => {
@@ -133,10 +144,10 @@ const ComponentsAppsUsers = () => {
                         </div>
                     </div>
                     <div className="relative">
-                        <input type="text" placeholder="Search Users" className="peer form-input py-2 ltr:pr-11 rtl:pl-11" value={search} onChange={(e) => setSearch(e.target.value)} />
+                        {/* <input type="text" placeholder="Search Users" className="peer form-input py-2 ltr:pr-11 rtl:pl-11" value={search} onChange={(e) => setSearch(e.target.value)} />
                         <button type="button" className="absolute top-1/2 -translate-y-1/2 peer-focus:text-primary ltr:right-[11px] rtl:left-[11px]">
                             <IconSearch className="mx-auto" />
-                        </button>
+                        </button> */}
                     </div>
                 </div>
             </div>
@@ -160,7 +171,7 @@ const ComponentsAppsUsers = () => {
                                         <tr key={contact.nik}>
                                             <td>{contact.nik}</td>
                                             <td>{contact.name}</td>
-                                            <td>{contact.dateOfBirth}</td>
+                                            <td>{new Date(contact.dateOfBirth).toLocaleDateString()}</td>
                                             <td>{contact.motherName}</td>
                                             <td>
                                                 <div className="flex items-center justify-center gap-4">

@@ -5,10 +5,18 @@ import { puskesmasSchema, PuskesmasType } from '@/lib/zod';
 
 export const getPuskesmass = async () => {
     try {
-        const data = await prisma.puskesmas.findMany({ include: { province: true, city: true, subdistrict: true, village: true } });
+        const data = await prisma.puskesmas.findMany({
+            include: {
+                province: true,
+                city: true,
+                subdistrict: true,
+                village: true,
+            },
+        });
 
         return data;
     } catch (error) {
+        console.error(error);
         return null;
     }
 };

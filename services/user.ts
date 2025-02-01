@@ -1,6 +1,5 @@
 'use server';
 import { prisma } from '@/lib/prisma';
-
 export const getUsers = async () => {
     try {
         const user = await prisma.user.findMany();
@@ -31,4 +30,4 @@ export const getUserByEmail = async (email: string) => {
     }
 };
 
-export const createUser = async () => {};
+export const createUser = async (name: string, email: string, password: string, image?: string) => {};
