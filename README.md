@@ -43,3 +43,5 @@ npm exec prisma migrate dev
 
 regenerate
 npm exec prisma generate
+
+npx prisma db seed

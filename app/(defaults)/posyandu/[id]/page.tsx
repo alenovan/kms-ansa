@@ -1,4 +1,4 @@
-import PosyanduDetail from '@/components/apps/posyandu/detail';
+import ComponentPosyanduDetail from '@/components/apps/posyandu/detail';
 import { Metadata } from 'next';
 import React from 'react';
 
@@ -7,7 +7,7 @@ export const metadata: Metadata = {
 };
 
 const Posyandu = () => {
-    return <PosyanduDetail />;
+    return <ComponentPosyanduDetail />;
 };
 
 export default Posyandu;

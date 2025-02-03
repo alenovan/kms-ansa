@@ -1,4 +1,4 @@
-import PosyanduApps from '@/components/apps/posyandu/components-apps-posyandu';
+import ComponentPosyandu from '@/components/apps/posyandu/list';
 import { Metadata } from 'next';
 import React from 'react';
 
@@ -6,8 +6,8 @@ export const metadata: Metadata = {
     title: 'Posyandu',
 };
 
-const Posyandu = () => {
-    return <PosyanduApps />;
+const Posyandus = () => {
+    return <ComponentPosyandu />;
 };
 
-export default Posyandu;
+export default Posyandus;

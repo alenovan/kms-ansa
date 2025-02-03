@@ -11,9 +11,10 @@ export const getProvinces = async () => {
     }
 };
 
-export const getCities = async () => {
+export const getCities = async ({ provinceId }: { provinceId?: string }) => {
     try {
-        const data = await prisma.city.findMany();
+        const whereClause = provinceId ? { provinceId: provinceId } : {};
+        const data = await prisma.city.findMany({ where: whereClause });
 
         return data;
     } catch (error) {
@@ -21,9 +22,10 @@ export const getCities = async () => {
     }
 };
 
-export const getSubDistricts = async () => {
+export const getSubDistricts = async ({ cityId }: { cityId?: string }) => {
     try {
-        const data = await prisma.subDistrict.findMany();
+        const whereClause = cityId ? { cityId: cityId } : {};
+        const data = await prisma.subDistrict.findMany({ where: whereClause });
 
         return data;
     } catch (error) {
@@ -31,9 +33,10 @@ export const getSubDistricts = async () => {
     }
 };
 
-export const getVillages = async () => {
+export const getVillages = async ({ subDistrictId }: { subDistrictId?: string }) => {
     try {
-        const data = await prisma.village.findMany();
+        const whereClause = subDistrictId ? { subDistrictId: subDistrictId } : {};
+        const data = await prisma.village.findMany({ where: whereClause });
 
         return data;
     } catch (error) {

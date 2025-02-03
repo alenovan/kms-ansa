@@ -36,8 +36,32 @@ export const medicalRecordSchema = z.object({
     treatment: z.string().min(1, 'Treatment is required'),
 });
 
+export const roleSchema = z.object({
+    name: z.string().min(1, 'Name is required'),
+});
+
+export const userSchema = z.object({
+    name: z.string().min(1, 'Name is required'),
+    email: z.string().min(1, 'Email is required'),
+    password: z.string().min(1, 'Password is required'),
+    posyanduId: string({ required_error: 'Posyandu is required' }).trim().optional(),
+    puskesmasId: string({ required_error: 'Posyandu is required' }).trim().optional(),
+    roleId: string({ required_error: 'Role is required' }).trim().min(1, 'Role is required'),
+});
+
+export const userUpdateSchema = z.object({
+    name: z.string().min(1, 'Name is required'),
+    email: z.string().min(1, 'Email is required'),
+    posyanduId: string({ required_error: 'Posyandu is required' }).trim().optional(),
+    puskesmasId: string({ required_error: 'Posyandu is required' }).trim().optional(),
+    roleId: string({ required_error: 'Role is required' }).trim().min(1, 'Role is required'),
+});
+
 export type MedicalRecordType = z.infer<typeof medicalRecordSchema>;
 export type SignInType = z.infer<typeof signInSchema>;
 export type PuskesmasType = z.infer<typeof puskesmasSchema>;
 export type PosyanduType = z.infer<typeof posyanduSchema>;
 export type MemberType = z.infer<typeof memberSchema>;
+export type RoleType = z.infer<typeof roleSchema>;
+export type UserType = z.infer<typeof userSchema>;
+export type UserUpdateType = z.infer<typeof userUpdateSchema>;

@@ -7,13 +7,15 @@ import { useFormMutation } from '@/hooks/useFormMutation';
 import { createPosyandu, deletePosyandu, getPosyandus, updatePosyandu } from '@/services/posyandu';
 import { getPuskesmass } from '@/services/puskesmas';
 import { Transition, Dialog, TransitionChild, DialogPanel } from '@headlessui/react';
+import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import React, { Fragment, useLayoutEffect, useState } from 'react';
 import Select from 'react-select';
 import Swal from 'sweetalert2';
 
-const PosyanduApps = () => {
+const ComponentPosyandu = () => {
     const router = useRouter();
+    const { data: session } = useSession();
 
     const [modal, setModal] = useState<boolean>(false);
     const [initialValues, setInitialValues] = useState({ id: '', puskesmasId: '', name: '', address: '' });
@@ -31,7 +33,7 @@ const PosyanduApps = () => {
     };
 
     const fetchData = async () => {
-        const data = await getPosyandus();
+        const data = await getPosyandus({});
 
         setList(data);
     };
@@ -60,21 +62,23 @@ const PosyanduApps = () => {
             <div className="flex flex-wrap items-center justify-between gap-4">
                 <h2 className="text-xl">Posyandu</h2>
                 <div className="flex w-full flex-col gap-4 sm:w-auto sm:flex-row sm:items-center sm:gap-3">
-                    <div className="flex gap-3">
-                        <div>
-                            <button
-                                type="button"
-                                className="btn btn-primary"
-                                onClick={() => {
-                                    setModal(true);
-                                    setInitialValues({ id: '', puskesmasId: '', name: '', address: '' });
-                                }}
-                            >
-                                <IconUserPlus className="ltr:mr-2 rtl:ml-2" />
-                                Tambah Posyandu
-                            </button>
+                    {session?.user.role.toLowerCase() !== 'dinas' && (
+                        <div className="flex gap-3">
+                            <div>
+                                <button
+                                    type="button"
+                                    className="btn btn-primary"
+                                    onClick={() => {
+                                        setModal(true);
+                                        setInitialValues({ id: '', puskesmasId: '', name: '', address: '' });
+                                    }}
+                                >
+                                    <IconUserPlus className="ltr:mr-2 rtl:ml-2" />
+                                    Tambah Posyandu
+                                </button>
+                            </div>
                         </div>
-                    </div>
+                    )}
                     {/* <div className="relative">
                         <input type="text" placeholder="Search Users" className="peer form-input py-2 ltr:pr-11 rtl:pl-11" value={search} onChange={(e) => setSearch(e.target.value)} />
                         <button type="button" className="absolute top-1/2 -translate-y-1/2 peer-focus:text-primary ltr:right-[11px] rtl:left-[11px]">
@@ -103,49 +107,60 @@ const PosyanduApps = () => {
                                         <td>{x.address}</td>
                                         <td>
                                             <div className="flex items-center justify-center gap-4">
-                                                <button type="button" className="btn btn-sm btn-outline-secondary" onClick={() => router.push('/posyandu/' + x.id)}>
-                                                    Lihat
-                                                </button>
-                                                <button
-                                                    type="button"
-                                                    className="btn btn-sm btn-outline-primary"
-                                                    onClick={() => {
-                                                        setInitialValues({
-                                                            id: x.id,
-                                                            puskesmasId: x.puskesmasId,
-                                                            name: x.name,
-                                                            address: x.address,
-                                                        });
-                                                        setModal(true);
-                                                    }}
-                                                >
-                                                    Edit
-                                                </button>
-                                                <button
-                                                    type="button"
-                                                    className="btn btn-sm btn-outline-danger"
-                                                    onClick={() => {
-                                                        Swal.fire({
-                                                            icon: 'warning',
-                                                            title: 'Are you sure?',
-                                                            text: "You won't be able to revert this!",
-                                                            showCancelButton: true,
-                                                            confirmButtonText: 'Delete',
-                                                            padding: '2em',
-                                                            customClass: { popup: 'sweet-alerts' },
-                                                        }).then(async (result) => {
-                                                            if (result.value) {
-                                                                const data = await deletePosyandu(x.id);
-                                                                if (data.success) {
-                                                                    Swal.fire({ title: 'Deleted!', text: 'Your file has been deleted.', icon: 'success', customClass: { popup: 'sweet-alerts' } });
-                                                                    fetchData();
-                                                                }
-                                                            }
-                                                        });
-                                                    }}
-                                                >
-                                                    Delete
-                                                </button>
+                                                {session?.user.role.toLowerCase() === 'posyandu' && (
+                                                    <button type="button" className="btn btn-sm btn-outline-secondary" onClick={() => router.push('/posyandu/' + x.id)}>
+                                                        Lihat
+                                                    </button>
+                                                )}
+                                                {session?.user.role.toLowerCase() !== 'dinas' && (
+                                                    <>
+                                                        <button
+                                                            type="button"
+                                                            className="btn btn-sm btn-outline-primary"
+                                                            onClick={() => {
+                                                                setInitialValues({
+                                                                    id: x.id,
+                                                                    puskesmasId: x.puskesmasId,
+                                                                    name: x.name,
+                                                                    address: x.address,
+                                                                });
+                                                                setModal(true);
+                                                            }}
+                                                        >
+                                                            Edit
+                                                        </button>
+                                                        <button
+                                                            type="button"
+                                                            className="btn btn-sm btn-outline-danger"
+                                                            onClick={() => {
+                                                                Swal.fire({
+                                                                    icon: 'warning',
+                                                                    title: 'Are you sure?',
+                                                                    text: "You won't be able to revert this!",
+                                                                    showCancelButton: true,
+                                                                    confirmButtonText: 'Delete',
+                                                                    padding: '2em',
+                                                                    customClass: { popup: 'sweet-alerts' },
+                                                                }).then(async (result) => {
+                                                                    if (result.value) {
+                                                                        const data = await deletePosyandu(x.id);
+                                                                        if (data.success) {
+                                                                            Swal.fire({
+                                                                                title: 'Deleted!',
+                                                                                text: 'Your file has been deleted.',
+                                                                                icon: 'success',
+                                                                                customClass: { popup: 'sweet-alerts' },
+                                                                            });
+                                                                            fetchData();
+                                                                        }
+                                                                    }
+                                                                });
+                                                            }}
+                                                        >
+                                                            Delete
+                                                        </button>
+                                                    </>
+                                                )}
                                             </div>
                                         </td>
                                     </tr>
@@ -217,4 +232,4 @@ const PosyanduApps = () => {
     );
 };
 
-export default PosyanduApps;
+export default ComponentPosyandu;
