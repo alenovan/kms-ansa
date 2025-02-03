@@ -25,7 +25,13 @@ model User {
   sessions      Session[]
   // Optional for WebAuthn support
   Authenticator Authenticator[]
+  puskesmasId   String?
   posyanduId    String?
+  roleId        String @default("")
+
+  role          Role @relation(fields: [roleId], references: [id])
+  posyandu      Posyandu? @relation(fields: [posyanduId], references: [id])
+  puskesmas     Puskesmas? @relation(fields: [puskesmasId], references: [id])
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -100,6 +106,8 @@ model Role {
   id            String @id @default(cuid())
   name          String
 
+  users         User[]
+
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 }
@@ -118,6 +126,7 @@ model Puskesmas {
   subdistrict   SubDistrict @relation(fields: [subDistrictId], references: [id])
   village       Village @relation(fields: [villageId], references: [id])
   posyandu      Posyandu[]
+  user          User[]
 
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
@@ -130,6 +139,7 @@ model Posyandu {
   address       String
 
   puskesmas     Puskesmas @relation(fields: [puskesmasId], references: [id])
+  user          User[]
 
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt

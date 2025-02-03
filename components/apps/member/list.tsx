@@ -9,8 +9,11 @@ import Swal from 'sweetalert2';
 import axios from 'axios';
 import Link from 'next/link';
 import { deleteMember } from '@/services/member';
+import { useSession } from 'next-auth/react';
 
-const ComponentsAppsUsers = () => {
+const ComponentMember = () => {
+    const { data: session } = useSession();
+
     const [addUserModal, setAddUserModal] = useState(false);
     const [value, setValue] = useState('list');
     const [defaultParams] = useState({
@@ -162,7 +165,7 @@ const ComponentsAppsUsers = () => {
                                     <th>Nama</th>
                                     <th>Tanggal lahir</th>
                                     <th>Nama Ibu</th>
-                                    <th className="!text-center">Actions</th>
+                                    {session?.user.role.toLowerCase() !== 'dinas' && <th className="!text-center">Actions</th>}
                                 </tr>
                             </thead>
                             <tbody>
@@ -173,21 +176,23 @@ const ComponentsAppsUsers = () => {
                                             <td>{contact.name}</td>
                                             <td>{new Date(contact.dateOfBirth).toLocaleDateString()}</td>
                                             <td>{contact.motherName}</td>
-                                            <td>
-                                                <div className="flex items-center justify-center gap-4">
-                                                    <Link href={`/checkup/${contact.nik}`} passHref>
-                                                        <button type="button" className="btn btn-sm btn-outline-primary">
-                                                            Riwayat Checkup
+                                            {session?.user.role.toLowerCase() !== 'dinas' && (
+                                                <td>
+                                                    <div className="flex items-center justify-center gap-4">
+                                                        <Link href={`/checkup/${contact.nik}`} passHref>
+                                                            <button type="button" className="btn btn-sm btn-outline-primary">
+                                                                Riwayat Checkup
+                                                            </button>
+                                                        </Link>
+                                                        <button type="button" className="btn btn-sm btn-outline-primary" onClick={() => editUser(contact)}>
+                                                            Edit
                                                         </button>
-                                                    </Link>
-                                                    <button type="button" className="btn btn-sm btn-outline-primary" onClick={() => editUser(contact)}>
-                                                        Edit
-                                                    </button>
-                                                    <button type="button" className="btn btn-sm btn-outline-danger" onClick={() => deleteUser(contact)}>
-                                                        Delete
-                                                    </button>
-                                                </div>
-                                            </td>
+                                                        <button type="button" className="btn btn-sm btn-outline-danger" onClick={() => deleteUser(contact)}>
+                                                            Delete
+                                                        </button>
+                                                    </div>
+                                                </td>
+                                            )}
                                         </tr>
                                     );
                                 })}
@@ -269,4 +274,4 @@ const ComponentsAppsUsers = () => {
     );
 };
 
-export default ComponentsAppsUsers;
+export default ComponentMember;

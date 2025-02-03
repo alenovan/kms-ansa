@@ -8,13 +8,15 @@ import { createMember, deleteMember, getMembers, updateMember } from '@/services
 import { getPosyandu } from '@/services/posyandu';
 import { formatDate } from '@/utils/helpers';
 import { Transition, Dialog, TransitionChild, DialogPanel } from '@headlessui/react';
+import { useSession } from 'next-auth/react';
 import { useParams, useRouter } from 'next/navigation';
 import React, { Fragment, useLayoutEffect, useState } from 'react';
 import Swal from 'sweetalert2';
 
-const PosyanduDetail = () => {
+const ComponentPosyanduDetail = () => {
     const router = useRouter();
     const params = useParams();
+    const { data: session } = useSession();
 
     const [modal, setModal] = useState<boolean>(false);
     const [initialValues, setInitialValues] = useState({ id: '', nik: '', name: '', gender: '', dateOfBirth: '', motherName: '', posyanduId: '' });
@@ -73,21 +75,23 @@ const PosyanduDetail = () => {
                 <div className="flex flex-wrap items-center justify-between gap-4">
                     <h2 className="text-xl">Peserta</h2>
                     <div className="flex w-full flex-col gap-4 sm:w-auto sm:flex-row sm:items-center sm:gap-3">
-                        <div className="flex gap-3">
-                            <div>
-                                <button
-                                    type="button"
-                                    className="btn btn-primary"
-                                    onClick={() => {
-                                        setModal(true);
-                                        setInitialValues({ id: '', nik: '', name: '', gender: '', dateOfBirth: '', motherName: '', posyanduId: '' });
-                                    }}
-                                >
-                                    <IconUserPlus className="ltr:mr-2 rtl:ml-2" />
-                                    Tambah Peserta
-                                </button>
+                        {session?.user.role.toLowerCase() !== 'dinas' && (
+                            <div className="flex gap-3">
+                                <div>
+                                    <button
+                                        type="button"
+                                        className="btn btn-primary"
+                                        onClick={() => {
+                                            setModal(true);
+                                            setInitialValues({ id: '', nik: '', name: '', gender: '', dateOfBirth: '', motherName: '', posyanduId: '' });
+                                        }}
+                                    >
+                                        <IconUserPlus className="ltr:mr-2 rtl:ml-2" />
+                                        Tambah Peserta
+                                    </button>
+                                </div>
                             </div>
-                        </div>
+                        )}
                         {/* <div className="relative">
                         <input type="text" placeholder="Search Users" className="peer form-input py-2 ltr:pr-11 rtl:pl-11" value={search} onChange={(e) => setSearch(e.target.value)} />
                         <button type="button" className="absolute top-1/2 -translate-y-1/2 peer-focus:text-primary ltr:right-[11px] rtl:left-[11px]">
@@ -106,7 +110,7 @@ const PosyanduDetail = () => {
                                     <th>Jenis Kelamin</th>
                                     <th>Tanggal lahir</th>
                                     <th>Nama Ibu</th>
-                                    <th className="!text-center">Actions</th>
+                                    {session?.user.role.toLowerCase() !== 'dinas' && <th className="!text-center">Actions</th>}
                                 </tr>
                             </thead>
                             <tbody>
@@ -118,53 +122,60 @@ const PosyanduDetail = () => {
                                             <td>{x.gender}</td>
                                             <td>{formatDate(x.dateOfBirth)}</td>
                                             <td>{x.motherName}</td>
-                                            <td>
-                                                <div className="flex items-center justify-center gap-4">
-                                                    <button
-                                                        type="button"
-                                                        className="btn btn-sm btn-outline-primary"
-                                                        onClick={() => {
-                                                            setInitialValues({
-                                                                id: x.id,
-                                                                nik: x.nik,
-                                                                name: x.name,
-                                                                gender: x.gender,
-                                                                dateOfBirth: x.dateOfBirth,
-                                                                motherName: x.motherName,
-                                                                posyanduId: x.posyanduId,
-                                                            });
-                                                            setModal(true);
-                                                        }}
-                                                    >
-                                                        Edit
-                                                    </button>
-                                                    <button
-                                                        type="button"
-                                                        className="btn btn-sm btn-outline-danger"
-                                                        onClick={() => {
-                                                            Swal.fire({
-                                                                icon: 'warning',
-                                                                title: 'Are you sure?',
-                                                                text: "You won't be able to revert this!",
-                                                                showCancelButton: true,
-                                                                confirmButtonText: 'Delete',
-                                                                padding: '2em',
-                                                                customClass: { popup: 'sweet-alerts' },
-                                                            }).then(async (result) => {
-                                                                if (result.value) {
-                                                                    const data = await deleteMember(x.id);
-                                                                    if (data.success) {
-                                                                        Swal.fire({ title: 'Deleted!', text: 'Your file has been deleted.', icon: 'success', customClass: { popup: 'sweet-alerts' } });
-                                                                        fetchData();
+                                            {session?.user.role.toLowerCase() !== 'dinas' && (
+                                                <td>
+                                                    <div className="flex items-center justify-center gap-4">
+                                                        <button
+                                                            type="button"
+                                                            className="btn btn-sm btn-outline-primary"
+                                                            onClick={() => {
+                                                                setInitialValues({
+                                                                    id: x.id,
+                                                                    nik: x.nik,
+                                                                    name: x.name,
+                                                                    gender: x.gender,
+                                                                    dateOfBirth: x.dateOfBirth,
+                                                                    motherName: x.motherName,
+                                                                    posyanduId: x.posyanduId,
+                                                                });
+                                                                setModal(true);
+                                                            }}
+                                                        >
+                                                            Edit
+                                                        </button>
+                                                        <button
+                                                            type="button"
+                                                            className="btn btn-sm btn-outline-danger"
+                                                            onClick={() => {
+                                                                Swal.fire({
+                                                                    icon: 'warning',
+                                                                    title: 'Are you sure?',
+                                                                    text: "You won't be able to revert this!",
+                                                                    showCancelButton: true,
+                                                                    confirmButtonText: 'Delete',
+                                                                    padding: '2em',
+                                                                    customClass: { popup: 'sweet-alerts' },
+                                                                }).then(async (result) => {
+                                                                    if (result.value) {
+                                                                        const data = await deleteMember(x.id);
+                                                                        if (data.success) {
+                                                                            Swal.fire({
+                                                                                title: 'Deleted!',
+                                                                                text: 'Your file has been deleted.',
+                                                                                icon: 'success',
+                                                                                customClass: { popup: 'sweet-alerts' },
+                                                                            });
+                                                                            fetchData();
+                                                                        }
                                                                     }
-                                                                }
-                                                            });
-                                                        }}
-                                                    >
-                                                        Delete
-                                                    </button>
-                                                </div>
-                                            </td>
+                                                                });
+                                                            }}
+                                                        >
+                                                            Delete
+                                                        </button>
+                                                    </div>
+                                                </td>
+                                            )}
                                         </tr>
                                     );
                                 })}
@@ -262,4 +273,4 @@ const PosyanduDetail = () => {
     );
 };
 
-export default PosyanduDetail;
+export default ComponentPosyanduDetail;

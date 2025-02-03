@@ -12,10 +12,12 @@ import IconMinus from '@/components/icon/icon-minus';
 import IconMenuUsers from '@/components/icon/menu/icon-menu-users';
 import { usePathname } from 'next/navigation';
 import { getTranslation } from '@/i18n';
+import { useSession } from 'next-auth/react';
 
 const Sidebar = () => {
     const dispatch = useDispatch();
     const { t } = getTranslation();
+    const { data: session } = useSession();
     const pathname = usePathname();
     const themeConfig = useSelector((state: IRootState) => state.themeConfig);
     const semidark = useSelector((state: IRootState) => state.themeConfig.semidark);
@@ -90,43 +92,102 @@ const Sidebar = () => {
                                 <span>{t('apps')}</span>
                             </h2>
 
-                            <li className="nav-item">
-                                <Link href="/users" className="group">
-                                    <div className="flex items-center">
-                                        <IconMenuUsers className="shrink-0 group-hover:!text-primary" />
-                                        <span className="text-black ltr:pl-3 rtl:pr-3 dark:text-[#506690] dark:group-hover:text-white-dark">{t('users')}</span>
-                                    </div>
-                                </Link>
-                            </li>
-                            <li className="nav-item">
-                                <Link href="/checkup" className="group">
-                                    <div className="flex items-center">
-                                        <IconMenuUsers className="shrink-0 group-hover:!text-primary" />
-                                        <span className="text-black ltr:pl-3 rtl:pr-3 dark:text-[#506690] dark:group-hover:text-white-dark">Checkup</span>
-                                    </div>
-                                </Link>
-                            </li>
-                            <h2 className="-mx-4 mb-1 flex items-center bg-white-light/30 px-7 py-3 font-extrabold uppercase dark:bg-dark dark:bg-opacity-[0.08]">
-                                <IconMinus className="hidden h-5 w-4 flex-none" />
-                                <span>Admin</span>
-                            </h2>
-
-                            <li className="nav-item">
-                                <Link href="/puskesmas" className="group">
-                                    <div className="flex items-center">
-                                        <IconMenuUsers className="shrink-0 group-hover:!text-primary" />
-                                        <span className="text-black ltr:pl-3 rtl:pr-3 dark:text-[#506690] dark:group-hover:text-white-dark">Puskesmas</span>
-                                    </div>
-                                </Link>
-                            </li>
-                            <li className="nav-item">
-                                <Link href="/posyandu" className="group">
-                                    <div className="flex items-center">
-                                        <IconMenuUsers className="shrink-0 group-hover:!text-primary" />
-                                        <span className="text-black ltr:pl-3 rtl:pr-3 dark:text-[#506690] dark:group-hover:text-white-dark">Posyandu</span>
-                                    </div>
-                                </Link>
-                            </li>
+                            {session?.user.role.toLocaleLowerCase() === 'super admin' && (
+                                <>
+                                    <li className="nav-item">
+                                        <Link href="/puskesmas" className="group">
+                                            <div className="flex items-center">
+                                                <IconMenuUsers className="shrink-0 group-hover:!text-primary" />
+                                                <span className="text-black ltr:pl-3 rtl:pr-3 dark:text-[#506690] dark:group-hover:text-white-dark">Puskesmas</span>
+                                            </div>
+                                        </Link>
+                                    </li>
+                                    <li className="nav-item">
+                                        <Link href="/users" className="group">
+                                            <div className="flex items-center">
+                                                <IconMenuUsers className="shrink-0 group-hover:!text-primary" />
+                                                <span className="text-black ltr:pl-3 rtl:pr-3 dark:text-[#506690] dark:group-hover:text-white-dark">Pengguna</span>
+                                            </div>
+                                        </Link>
+                                    </li>
+                                </>
+                            )}
+                            {session?.user.role.toLocaleLowerCase() === 'puskesmas' && (
+                                <>
+                                    <li className="nav-item">
+                                        <Link href="/posyandu" className="group">
+                                            <div className="flex items-center">
+                                                <IconMenuUsers className="shrink-0 group-hover:!text-primary" />
+                                                <span className="text-black ltr:pl-3 rtl:pr-3 dark:text-[#506690] dark:group-hover:text-white-dark">Posyandu</span>
+                                            </div>
+                                        </Link>
+                                    </li>
+                                </>
+                            )}
+                            {session?.user.role.toLocaleLowerCase() === 'posyandu' && (
+                                <>
+                                    <li className="nav-item">
+                                        <Link href="/members" className="group">
+                                            <div className="flex items-center">
+                                                <IconMenuUsers className="shrink-0 group-hover:!text-primary" />
+                                                <span className="text-black ltr:pl-3 rtl:pr-3 dark:text-[#506690] dark:group-hover:text-white-dark">{t('users')}</span>
+                                            </div>
+                                        </Link>
+                                    </li>
+                                    <li className="nav-item">
+                                        <Link href="/checkup" className="group">
+                                            <div className="flex items-center">
+                                                <IconMenuUsers className="shrink-0 group-hover:!text-primary" />
+                                                <span className="text-black ltr:pl-3 rtl:pr-3 dark:text-[#506690] dark:group-hover:text-white-dark">Checkup</span>
+                                            </div>
+                                        </Link>
+                                    </li>
+                                </>
+                            )}
+                            {session?.user.role.toLocaleLowerCase() === 'dinas' && (
+                                <>
+                                    <li className="nav-item">
+                                        <Link href="/members" className="group">
+                                            <div className="flex items-center">
+                                                <IconMenuUsers className="shrink-0 group-hover:!text-primary" />
+                                                <span className="text-black ltr:pl-3 rtl:pr-3 dark:text-[#506690] dark:group-hover:text-white-dark">{t('users')}</span>
+                                            </div>
+                                        </Link>
+                                    </li>
+                                    <li className="nav-item">
+                                        <Link href="/checkup" className="group">
+                                            <div className="flex items-center">
+                                                <IconMenuUsers className="shrink-0 group-hover:!text-primary" />
+                                                <span className="text-black ltr:pl-3 rtl:pr-3 dark:text-[#506690] dark:group-hover:text-white-dark">Checkup</span>
+                                            </div>
+                                        </Link>
+                                    </li>
+                                    <li className="nav-item">
+                                        <Link href="/posyandu" className="group">
+                                            <div className="flex items-center">
+                                                <IconMenuUsers className="shrink-0 group-hover:!text-primary" />
+                                                <span className="text-black ltr:pl-3 rtl:pr-3 dark:text-[#506690] dark:group-hover:text-white-dark">Posyandu</span>
+                                            </div>
+                                        </Link>
+                                    </li>
+                                    <li className="nav-item">
+                                        <Link href="/puskesmas" className="group">
+                                            <div className="flex items-center">
+                                                <IconMenuUsers className="shrink-0 group-hover:!text-primary" />
+                                                <span className="text-black ltr:pl-3 rtl:pr-3 dark:text-[#506690] dark:group-hover:text-white-dark">Puskesmas</span>
+                                            </div>
+                                        </Link>
+                                    </li>
+                                    <li className="nav-item">
+                                        <Link href="/users" className="group">
+                                            <div className="flex items-center">
+                                                <IconMenuUsers className="shrink-0 group-hover:!text-primary" />
+                                                <span className="text-black ltr:pl-3 rtl:pr-3 dark:text-[#506690] dark:group-hover:text-white-dark">Pengguna</span>
+                                            </div>
+                                        </Link>
+                                    </li>
+                                </>
+                            )}
                         </ul>
                     </PerfectScrollbar>
                 </div>

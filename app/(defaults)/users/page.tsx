@@ -1,13 +1,13 @@
-import ComponentsAppsContacts from '@/components/apps/contacts/components-apps-contacts';
+import ComponentUser from '@/components/users/list';
 import { Metadata } from 'next';
 import React from 'react';
 
 export const metadata: Metadata = {
-    title: 'Contacts',
+    title: 'Pengguna',
 };
 
-const Contacts = () => {
-    return <ComponentsAppsContacts />;
+const Users = () => {
+    return <ComponentUser />;
 };
 
-export default Contacts;
+export default Users;

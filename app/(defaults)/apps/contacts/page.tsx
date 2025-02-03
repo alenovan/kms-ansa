@@ -1,4 +1,4 @@
-import ComponentsAppsContacts from '@/components/apps/contacts/components-apps-contacts';
+import ComponentsAppsContacts from '@/components/apps/member/list';
 import { Metadata } from 'next';
 import React from 'react';
 

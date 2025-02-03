@@ -3,9 +3,10 @@
 import { prisma } from '@/lib/prisma';
 import { posyanduSchema, PosyanduType } from '@/lib/zod';
 
-export const getPosyandus = async () => {
+export const getPosyandus = async ({ puskesmasId }: { puskesmasId?: string }) => {
     try {
-        const data = await prisma.posyandu.findMany({ include: { puskesmas: true } });
+        const whereClause = puskesmasId ? { puskesmasId: puskesmasId } : {};
+        const data = await prisma.posyandu.findMany({ where: whereClause, include: { puskesmas: true } });
 
         return data;
     } catch (error) {

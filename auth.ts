@@ -20,6 +20,7 @@ declare module 'next-auth' {
         user: {
             id: string;
             emailVerified: string;
+            role: string;
         } & DefaultSession['user'];
     }
 }
@@ -77,6 +78,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                     return {
                         ...token,
                         emailVerified: data.emailVerified,
+                        role: data.role.name,
                     };
                 }
             }
@@ -91,6 +93,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                     ...session.user,
                     id: token.sub,
                     emailVerified: token.emailVerified,
+                    role: token.role,
                 },
             };
         },
