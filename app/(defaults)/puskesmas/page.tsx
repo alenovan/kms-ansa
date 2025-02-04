@@ -1,4 +1,4 @@
-import ComponentPuskesmas from '@/components/apps/puskesmas/list';
+import ComponentPuskesmas from '@/components/puskesmas/list';
 import { Metadata } from 'next';
 import React from 'react';
 

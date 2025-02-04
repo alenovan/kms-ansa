@@ -1,13 +1,17 @@
-import ComponentsDashboardAnalytics from '@/components/dashboard/components-dashboard-analytics';
-import { Metadata } from 'next';
-import React from 'react';
+'use client';
 
-export const metadata: Metadata = {
-    title: 'Analytics Admin',
+import { useRouter } from 'next/navigation';
+import React, { useEffect } from 'react';
+
+const Index = () => {
+    const router = useRouter();
+
+    useEffect(() => {
+        // Redirect to the index page
+        router.push('/dashboard');
+    }, [router]);
+
+    return <></>;
 };
 
-const Analytics = () => {
-    return <ComponentsDashboardAnalytics />;
-};
-
-export default Analytics;
+export default Index;

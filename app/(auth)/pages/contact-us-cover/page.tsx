@@ -1,4 +1,3 @@
-import LanguageDropdown from '@/components/language-dropdown';
 import ComponentsPagesContactUsForm from '@/components/pages/contact-us/components-pages-contact-us-form';
 import { Metadata } from 'next';
 import Link from 'next/link';
@@ -36,7 +35,6 @@ const ContactUsCover = () => {
                             <Link href="/" className="block w-8 lg:hidden">
                                 <img src="/assets/images/logo.svg" alt="Logo" className="mx-auto w-10" />
                             </Link>
-                            <LanguageDropdown className="ms-auto w-max" />
                         </div>
                         <div className="w-full max-w-[440px] lg:mt-16">
                             <div className="mb-10">

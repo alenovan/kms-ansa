@@ -1,10 +1,9 @@
 import ComponentsAuthLoginForm from '@/components/auth/components-auth-login-form';
 import { Metadata } from 'next';
-import Link from 'next/link';
 import React from 'react';
 
 export const metadata: Metadata = {
-    title: 'Login Boxed',
+    title: 'Login',
 };
 
 const BoxedSignIn = () => {
