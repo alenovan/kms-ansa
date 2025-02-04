@@ -107,7 +107,7 @@ const ComponentPosyandu = () => {
                                         <td>{x.address}</td>
                                         <td>
                                             <div className="flex items-center justify-center gap-4">
-                                                {session?.user.role.toLowerCase() === 'posyandu' && (
+                                                {(session?.user.role.toLowerCase() === 'posyandu' || session?.user.role.toLowerCase() === 'dinas') && (
                                                     <button type="button" className="btn btn-sm btn-outline-secondary" onClick={() => router.push('/posyandu/' + x.id)}>
                                                         Lihat
                                                     </button>

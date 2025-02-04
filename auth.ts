@@ -49,7 +49,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         async authorized({ auth, request: { nextUrl } }) {
             const loggedIn = !!auth?.user;
 
-            const protectedPaths = ['/', '/dashboard', '/users', '/checkup', '/puskesmas', '/posyandu'];
+            const protectedPaths = ['/dashboard', '/users', '/checkup', '/puskesmas', '/posyandu'];
             const isProtected = protectedPaths.some((path) => nextUrl.pathname.startsWith(path));
 
             // If trying to access a protected route without being logged in, redirect to login

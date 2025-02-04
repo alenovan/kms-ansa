@@ -4,7 +4,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import Link from 'next/link';
 import { IRootState } from '@/store';
 import { toggleTheme, toggleSidebar, toggleRTL } from '@/store/themeConfigSlice';
-import Dropdown from '@/components/dropdown';
 import IconMenu from '@/components/icon/icon-menu';
 import IconCalendar from '@/components/icon/icon-calendar';
 import IconEdit from '@/components/icon/icon-edit';
@@ -35,6 +34,8 @@ import { usePathname, useRouter } from 'next/navigation';
 import { getTranslation } from '@/i18n';
 import { useSession } from 'next-auth/react';
 import { signOut } from 'next-auth/react';
+import Dropdown from '../dropdown';
+
 const Header = () => {
     const pathname = usePathname();
     const dispatch = useDispatch();
@@ -183,10 +184,7 @@ const Header = () => {
                                         <div className="flex items-center px-4 py-4">
                                             <img className="h-10 w-10 rounded-md object-cover" src="/assets/images/logo.png" alt="userProfile" />
                                             <div className="truncate ltr:pl-4 rtl:pr-4">
-                                                <h4 className="text-base">
-                                                    {session?.user?.name}
-                                                    <span className="rounded bg-success-light px-1 text-xs text-success ltr:ml-2 rtl:ml-2">Pro</span>
-                                                </h4>
+                                                <h4 className="text-base">{session?.user?.name}</h4>
                                                 <button type="button" className="text-black/60 hover:text-primary dark:text-dark-light/60 dark:hover:text-white">
                                                     {session?.user?.email}
                                                 </button>
