@@ -1,4 +1,4 @@
-import ComponentPosyanduDetail from '@/components/apps/posyandu/detail';
+import ComponentPosyanduDetail from '@/components/posyandu/detail';
 import { Metadata } from 'next';
 import React from 'react';
 

@@ -1,4 +1,4 @@
-import CheckupDetail from '@/components/apps/checkup/components-apps-detail';
+import CheckupDetail from '@/components/checkup/components-apps-detail';
 import { Metadata } from 'next';
 import React from 'react';
 

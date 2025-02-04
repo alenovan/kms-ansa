@@ -1,4 +1,4 @@
-import ComponentMember from '@/components/apps/member/list';
+import ComponentMember from '@/components/member/list';
 import { Metadata } from 'next';
 import React from 'react';
 
