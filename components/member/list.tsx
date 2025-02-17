@@ -111,7 +111,7 @@ const ComponentMember = () => {
                                         <td>{x.motherName}</td>
                                         <td>
                                             <div className="flex items-center justify-center gap-4">
-                                                <Link href={`/checkup/${x.nik}`} passHref>
+                                                <Link href={`/checkup/${x.id}`} passHref>
                                                     <button type="button" className="btn btn-sm btn-outline-primary">
                                                         Riwayat Checkup
                                                     </button>
