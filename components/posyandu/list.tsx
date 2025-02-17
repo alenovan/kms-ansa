@@ -23,10 +23,10 @@ const ComponentPosyandu = () => {
     const [puskesmas, setPuskesmas] = useState<any | null>([]);
 
     const fetchMaster = async () => {
-        const data = await getPuskesmass();
+        const data = await getPuskesmass({});
 
         setPuskesmas(
-            data?.map((x) => {
+            data.data?.map((x) => {
                 return { label: x.name, value: x.id };
             }),
         );
@@ -117,7 +117,13 @@ const ComponentPosyandu = () => {
                                                         <button
                                                             type="button"
                                                             className="btn btn-sm btn-outline-primary"
-                                                            onClick={() => {
+                                                            onClick={async () => {
+                                                                const dataPuskesmas = await getPuskesmass({ search: x.puskesmas?.name });
+                                                                setPuskesmas(
+                                                                    dataPuskesmas.data?.map((x) => {
+                                                                        return { label: x.name, value: x.id };
+                                                                    }),
+                                                                );
                                                                 setInitialValues({
                                                                     id: x.id,
                                                                     puskesmasId: x.puskesmasId,
@@ -202,7 +208,20 @@ const ComponentPosyandu = () => {
                                         <form onSubmit={handleFormSubmit}>
                                             <div className="mb-5">
                                                 <label htmlFor="puskesmasId">Puskesmas</label>
-                                                <Select defaultValue={puskesmas?.find((x: any) => x.value === initialValues.puskesmasId)} options={puskesmas} name="puskesmasId" isSearchable={false} />
+                                                <Select
+                                                    defaultValue={puskesmas?.find((x: any) => x.value === initialValues.puskesmasId)}
+                                                    options={puskesmas}
+                                                    name="puskesmasId"
+                                                    isSearchable={true}
+                                                    onKeyDown={async (e: any) => {
+                                                        const dataPuskesmas = await getPuskesmass({ search: e.target.value });
+                                                        setPuskesmas(
+                                                            dataPuskesmas.data?.map((x) => {
+                                                                return { label: x.name, value: x.id };
+                                                            }),
+                                                        );
+                                                    }}
+                                                />
                                             </div>
                                             <div className="mb-5">
                                                 <label htmlFor="name">Nama</label>

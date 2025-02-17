@@ -1,13 +1,13 @@
-import CheckupApps from '@/components/checkup/components-apps-checkup';
+import ComponentCheckup from '@/components/checkup/list';
 import { Metadata } from 'next';
 import React from 'react';
 
 export const metadata: Metadata = {
-    title: 'Puskesmas',
+    title: 'Checkup',
 };
 
-const Contacts = () => {
-    return <CheckupApps />;
+const Checkups = () => {
+    return <ComponentCheckup />;
 };
 
-export default Contacts;
+export default Checkups;

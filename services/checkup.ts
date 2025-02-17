@@ -3,6 +3,21 @@
 import { prisma } from '@/lib/prisma';
 import { medicalRecordSchema, MedicalRecordType } from '@/lib/zod';
 
+export const getCheckups = async () => {
+    try {
+        const data = await prisma.checkup.findMany({
+            include: {
+                member: true,
+                medicalRecords: true,
+            },
+        });
+        return data;
+    } catch (error) {
+        console.error(error);
+        return null;
+    }
+};
+
 export const getMedicalRecords = async () => {
     try {
         const data = await prisma.medicalRecord.findMany({

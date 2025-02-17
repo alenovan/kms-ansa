@@ -3,8 +3,11 @@
 import { prisma } from '@/lib/prisma';
 import { puskesmasSchema, PuskesmasType } from '@/lib/zod';
 
-export const getPuskesmass = async () => {
+export const getPuskesmass = async ({ page = 1, pageSize = 10, search }: { page?: number; pageSize?: number; search?: string }) => {
     try {
+        const totalCount = await prisma.puskesmas.count({
+            where: search ? { name: { contains: search } } : {},
+        });
         const data = await prisma.puskesmas.findMany({
             include: {
                 province: true,
@@ -12,12 +15,25 @@ export const getPuskesmass = async () => {
                 subdistrict: true,
                 village: true,
             },
+            where: search ? { name: { contains: search } } : {},
+            skip: (page - 1) * pageSize,
+            take: pageSize,
         });
+        const totalPages = Math.ceil(totalCount / pageSize);
 
-        return data;
+        return {
+            data,
+            meta: {
+                currentPage: page,
+                totalPages,
+                totalCount,
+            },
+        };
     } catch (error) {
-        console.error(error);
-        return null;
+        return {
+            data: [],
+            meta: { currentPage: page, totalPages: 0, totalCount: 0 },
+        };
     }
 };
 
