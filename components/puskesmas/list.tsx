@@ -66,7 +66,7 @@ const ComponentPuskesmas = () => {
 
     useEffect(() => {
         fetchData();
-    }, [page]);
+    }, [page, search]);
 
     const { isPending, handleFormSubmit, error } = useFormMutation({
         actions: async (formData) => {

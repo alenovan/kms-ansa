@@ -3,13 +3,29 @@
 import { prisma } from '@/lib/prisma';
 import { memberSchema, MemberType } from '@/lib/zod';
 
-export const getMembers = async ({ posyanduId }: { posyanduId?: string }) => {
+export const getMembers = async ({ posyanduId, page = 1, pageSize = 10, search }: { posyanduId?: string; page?: number; pageSize?: number; search?: string }) => {
     try {
-        const data = await prisma.member.findMany({ where: { posyanduId } });
+        const whereClause = {
+            ...(posyanduId ? { posyanduId } : {}),
+            ...(search ? { name: { contains: search } } : {}),
+        };
+        const totalCount = await prisma.member.count({ where: whereClause });
+        const data = await prisma.member.findMany({ where: whereClause, skip: (page - 1) * pageSize, take: pageSize });
+        const totalPages = Math.ceil(totalCount / pageSize);
 
-        return data;
+        return {
+            data,
+            meta: {
+                currentPage: page,
+                totalPages,
+                totalCount,
+            },
+        };
     } catch (error) {
-        return null;
+        return {
+            data: [],
+            meta: { currentPage: page, totalPages: 0, totalCount: 0 },
+        };
     }
 };
 

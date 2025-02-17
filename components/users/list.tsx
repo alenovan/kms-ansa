@@ -61,7 +61,7 @@ const ComponentUser = () => {
 
     useEffect(() => {
         fetchData();
-    }, [page]);
+    }, [page, search]);
 
     const { isPending, handleFormSubmit, error } = useFormMutation({
         actions: async (formData) => {
@@ -147,7 +147,7 @@ const ComponentUser = () => {
                                                         onClick={async () => {
                                                             const dataPosyandu = await getPosyandus({ puskesmasId: x.puskesmasId });
                                                             await setPosyandu(
-                                                                dataPosyandu?.map((x) => {
+                                                                dataPosyandu.data?.map((x) => {
                                                                     return { label: x.name, value: x.id };
                                                                 }),
                                                             );
@@ -340,7 +340,7 @@ const ComponentUser = () => {
                                                     onChange={async (e) => {
                                                         const dataPosyandu = await getPosyandus({ puskesmasId: e.value });
                                                         setPosyandu(
-                                                            dataPosyandu?.map((x) => {
+                                                            dataPosyandu.data?.map((x) => {
                                                                 return { label: x.name, value: x.id };
                                                             }),
                                                         );

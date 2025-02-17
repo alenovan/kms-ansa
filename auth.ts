@@ -21,6 +21,7 @@ declare module 'next-auth' {
             id: string;
             emailVerified: string;
             role: string;
+            posyanduId: string;
         } & DefaultSession['user'];
     }
 }
@@ -79,6 +80,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                         ...token,
                         emailVerified: data.emailVerified,
                         role: data.role.name,
+                        posyanduId: data.posyanduId,
                     };
                 }
             }
@@ -94,6 +96,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                     id: token.sub,
                     emailVerified: token.emailVerified,
                     role: token.role,
+                    posyanduId: token.posyanduId
                 },
             };
         },

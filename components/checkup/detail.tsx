@@ -1,12 +1,11 @@
 'use client';
 
 import IconSearch from '@/components/icon/icon-search';
-import { useEffect, useLayoutEffect, useState } from 'react';
+import { useLayoutEffect, useState } from 'react';
 import Swal from 'sweetalert2';
-import axios from 'axios';
 import { useParams } from 'next/navigation';
 import dynamic from 'next/dynamic';
-import { createMedicalRecord, getCheckups, updateMedicalRecord } from '@/services/checkup';
+import { createMedicalRecord, getCheckupDashboard, getCheckups, updateMedicalRecord } from '@/services/checkup';
 import { getMember } from '@/services/member';
 
 // Import dynamic ApexCharts to avoid SSR issues
@@ -22,7 +21,7 @@ const ComponentCheckupDetail = () => {
     const [list, setList] = useState<any | null>([]);
 
     const fetchData = async () => {
-        const data = await getCheckups();
+        const data = await getCheckupDashboard();
         const profile = await getMember(`${params?.id}`);
         const sortedData = data?.sort((a: any, b: any) => new Date(a.checkupDate).getTime() - new Date(b.checkupDate).getTime());
         const heights = sortedData?.map((item: any) => item.height);

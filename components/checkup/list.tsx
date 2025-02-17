@@ -1,15 +1,17 @@
 'use client';
 
 import IconSearch from '@/components/icon/icon-search';
-import { useLayoutEffect, useState } from 'react';
+import { useEffect, useLayoutEffect, useState } from 'react';
 import Swal from 'sweetalert2';
 import { createMedicalRecord, getCheckups, updateMedicalRecord } from '@/services/checkup';
 
 const ComponentCheckup = () => {
-    const [list, setList] = useState<any | null>([]);
+    const [list, setList] = useState<any | null>({ data: [], meta: { currentPage: 1, totalPages: 0, totalCount: 0 } });
+    const [search, setSearch] = useState<string>('');
+    const [page, setPage] = useState<number>(1);
 
     const fetchData = async () => {
-        const data = await getCheckups();
+        const data = await getCheckups({ search, page: page });
 
         setList(data);
     };
@@ -17,6 +19,10 @@ const ComponentCheckup = () => {
     useLayoutEffect(() => {
         fetchData();
     }, []);
+
+    useEffect(() => {
+        fetchData();
+    }, [page, search]);
 
     const showMessage = (msg = '', type = 'success') => {
         const toast: any = Swal.mixin({
@@ -114,12 +120,21 @@ const ComponentCheckup = () => {
             <div className="flex flex-wrap items-center justify-between gap-4">
                 <h2 className="text-xl">Checkup Data</h2>
                 <div className="flex w-full flex-col gap-4 sm:w-auto sm:flex-row sm:items-center sm:gap-3">
-                    {/* <div className="relative">
-                        <input type="text" placeholder="Search Checkups" className="peer form-input py-2 ltr:pr-11 rtl:pl-11" />
+                    <div className="relative">
+                        <input
+                            type="text"
+                            placeholder="Search Checkups"
+                            className="peer form-input py-2 ltr:pr-11 rtl:pl-11"
+                            value={search}
+                            onChange={async (e) => {
+                                setSearch(e.target.value);
+                                setPage(1);
+                            }}
+                        />
                         <button type="button" className="absolute top-1/2 -translate-y-1/2 peer-focus:text-primary ltr:right-[11px] rtl:left-[11px]">
                             <IconSearch className="mx-auto" />
                         </button>
-                    </div> */}
+                    </div>
                 </div>
             </div>
 
@@ -138,7 +153,7 @@ const ComponentCheckup = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {list.map((checkup: any) => {
+                            {list.data?.map((checkup: any) => {
                                 return (
                                     <tr key={checkup.id}>
                                         <td>{checkup.member.name}</td>
@@ -162,6 +177,74 @@ const ComponentCheckup = () => {
                     </table>
                 </div>
             </div>
+
+            {list.meta?.totalPages !== 0 && (
+                <div className="mt-4">
+                    <ul className="inline-flex items-center space-x-1 rtl:space-x-reverse m-auto mb-4">
+                        {1 !== page && (
+                            <>
+                                <li>
+                                    <button
+                                        type="button"
+                                        className="flex justify-center font-semibold px-3.5 py-2 rounded transition text-dark hover:text-primary border-2 border-white-light dark:border-[#191e3a] hover:border-primary dark:hover:border-primary dark:text-white-light"
+                                        onClick={() => setPage(1)}
+                                    >
+                                        First
+                                    </button>
+                                </li>
+                                <li>
+                                    <button
+                                        type="button"
+                                        className="flex justify-center font-semibold px-3.5 py-2 rounded transition text-dark hover:text-primary border-2 border-white-light dark:border-[#191e3a] hover:border-primary dark:hover:border-primary dark:text-white-light"
+                                        onClick={() => setPage(page - 1)}
+                                    >
+                                        Prev
+                                    </button>
+                                </li>
+                            </>
+                        )}
+                        {Array.from(Array(list.meta?.totalPages).keys()).map((x) => {
+                            return (
+                                <li key={x}>
+                                    <button
+                                        type="button"
+                                        className={
+                                            x + 1 === list.meta?.currentPage
+                                                ? `flex justify-center font-semibold px-3.5 py-2 rounded transition text-primary border-2 border-primary dark:border-primary dark:text-white-light`
+                                                : `flex justify-center font-semibold px-3.5 py-2 rounded transition text-dark hover:text-primary border-2 border-white-light dark:border-[#191e3a] hover:border-primary dark:hover:border-primary dark:text-white-light`
+                                        }
+                                        onClick={() => setPage(x + 1)}
+                                    >
+                                        {x + 1}
+                                    </button>
+                                </li>
+                            );
+                        })}
+                        {list.meta?.totalPages !== page && (
+                            <>
+                                <li>
+                                    <button
+                                        type="button"
+                                        className="flex justify-center font-semibold px-3.5 py-2 rounded transition text-dark hover:text-primary border-2 border-white-light dark:border-[#191e3a] hover:border-primary dark:hover:border-primary dark:text-white-light"
+                                        onClick={() => setPage(page + 1)}
+                                    >
+                                        Next
+                                    </button>
+                                </li>
+                                <li>
+                                    <button
+                                        type="button"
+                                        className="flex justify-center font-semibold px-3.5 py-2 rounded transition text-dark hover:text-primary border-2 border-white-light dark:border-[#191e3a] hover:border-primary dark:hover:border-primary dark:text-white-light"
+                                        onClick={() => setPage(list.meta?.totalPages)}
+                                    >
+                                        Last
+                                    </button>
+                                </li>
+                            </>
+                        )}
+                    </ul>
+                </div>
+            )}
         </div>
     );
 };
