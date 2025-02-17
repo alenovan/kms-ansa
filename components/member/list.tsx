@@ -10,6 +10,7 @@ import { createMember, deleteMember, getMembers, updateMember } from '@/services
 import { useSession } from 'next-auth/react';
 import { useFormMutation } from '@/hooks/useFormMutation';
 import { formatDate } from '@/utils/helpers';
+import Link from 'next/link';
 
 const ComponentMember = () => {
     const { data: session } = useSession();
@@ -96,7 +97,7 @@ const ComponentMember = () => {
                                 <th>Jenis Kelamin</th>
                                 <th>Tanggal lahir</th>
                                 <th>Nama Ibu</th>
-                                {session?.user.role.toLowerCase() !== 'dinas' && <th className="!text-center">Actions</th>}
+                                <th className="!text-center">Actions</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -108,60 +109,67 @@ const ComponentMember = () => {
                                         <td>{x.gender}</td>
                                         <td>{formatDate(x.dateOfBirth)}</td>
                                         <td>{x.motherName}</td>
-                                        {session?.user.role.toLowerCase() !== 'dinas' && (
-                                            <td>
-                                                <div className="flex items-center justify-center gap-4">
-                                                    <button
-                                                        type="button"
-                                                        className="btn btn-sm btn-outline-primary"
-                                                        onClick={() => {
-                                                            setInitialValues({
-                                                                id: x.id,
-                                                                nik: x.nik,
-                                                                name: x.name,
-                                                                gender: x.gender,
-                                                                dateOfBirth: x.dateOfBirth,
-                                                                motherName: x.motherName,
-                                                                posyanduId: x.posyanduId,
-                                                            });
-                                                            setModal(true);
-                                                        }}
-                                                    >
-                                                        Edit
+                                        <td>
+                                            <div className="flex items-center justify-center gap-4">
+                                                <Link href={`/checkup/${x.nik}`} passHref>
+                                                    <button type="button" className="btn btn-sm btn-outline-primary">
+                                                        Riwayat Checkup
                                                     </button>
-                                                    <button
-                                                        type="button"
-                                                        className="btn btn-sm btn-outline-danger"
-                                                        onClick={() => {
-                                                            Swal.fire({
-                                                                icon: 'warning',
-                                                                title: 'Are you sure?',
-                                                                text: "You won't be able to revert this!",
-                                                                showCancelButton: true,
-                                                                confirmButtonText: 'Delete',
-                                                                padding: '2em',
-                                                                customClass: { popup: 'sweet-alerts' },
-                                                            }).then(async (result) => {
-                                                                if (result.value) {
-                                                                    const data = await deleteMember(x.id);
-                                                                    if (data.success) {
-                                                                        Swal.fire({
-                                                                            title: 'Deleted!',
-                                                                            text: 'Your file has been deleted.',
-                                                                            icon: 'success',
-                                                                            customClass: { popup: 'sweet-alerts' },
-                                                                        });
-                                                                        fetchData();
+                                                </Link>
+                                                {session?.user.role.toLowerCase() !== 'dinas' && (
+                                                    <>
+                                                        <button
+                                                            type="button"
+                                                            className="btn btn-sm btn-outline-primary"
+                                                            onClick={() => {
+                                                                setInitialValues({
+                                                                    id: x.id,
+                                                                    nik: x.nik,
+                                                                    name: x.name,
+                                                                    gender: x.gender,
+                                                                    dateOfBirth: x.dateOfBirth,
+                                                                    motherName: x.motherName,
+                                                                    posyanduId: x.posyanduId,
+                                                                });
+                                                                setModal(true);
+                                                            }}
+                                                        >
+                                                            Edit
+                                                        </button>
+                                                        <button
+                                                            type="button"
+                                                            className="btn btn-sm btn-outline-danger"
+                                                            onClick={() => {
+                                                                Swal.fire({
+                                                                    icon: 'warning',
+                                                                    title: 'Are you sure?',
+                                                                    text: "You won't be able to revert this!",
+                                                                    showCancelButton: true,
+                                                                    confirmButtonText: 'Delete',
+                                                                    padding: '2em',
+                                                                    customClass: { popup: 'sweet-alerts' },
+                                                                }).then(async (result) => {
+                                                                    if (result.value) {
+                                                                        const data = await deleteMember(x.id);
+                                                                        if (data.success) {
+                                                                            Swal.fire({
+                                                                                title: 'Deleted!',
+                                                                                text: 'Your file has been deleted.',
+                                                                                icon: 'success',
+                                                                                customClass: { popup: 'sweet-alerts' },
+                                                                            });
+                                                                            fetchData();
+                                                                        }
                                                                     }
-                                                                }
-                                                            });
-                                                        }}
-                                                    >
-                                                        Delete
-                                                    </button>
-                                                </div>
-                                            </td>
-                                        )}
+                                                                });
+                                                            }}
+                                                        >
+                                                            Delete
+                                                        </button>
+                                                    </>
+                                                )}
+                                            </div>
+                                        </td>
                                     </tr>
                                 );
                             })}
