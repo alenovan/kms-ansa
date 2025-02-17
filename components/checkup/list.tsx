@@ -1,26 +1,21 @@
 'use client';
 
 import IconSearch from '@/components/icon/icon-search';
-import { useEffect, useState } from 'react';
+import { useLayoutEffect, useState } from 'react';
 import Swal from 'sweetalert2';
-import axios from 'axios';
-import { createMedicalRecord, updateMedicalRecord } from '@/services/checkup';
+import { createMedicalRecord, getCheckups, updateMedicalRecord } from '@/services/checkup';
 
-const Checkup = () => {
-    const [addUserModal, setAddUserModal] = useState(false);
-    const [value, setValue] = useState('list');
-    const [filteredItems, setFilteredItems] = useState<any>([]);
-    const fetchCheckups = async () => {
-        try {
-            const response = await axios.get('/api/v1/intl/checkup'); // Updated endpoint for checkup data
-            setFilteredItems(response.data.data); // Assuming checkup data is under 'data'
-        } catch (error) {
-            showMessage('Failed to load checkup data', 'error');
-        }
+const ComponentCheckup = () => {
+    const [list, setList] = useState<any | null>([]);
+
+    const fetchData = async () => {
+        const data = await getCheckups();
+
+        setList(data);
     };
-    // Fetch checkup data from API
-    useEffect(() => {
-        fetchCheckups();
+
+    useLayoutEffect(() => {
+        fetchData();
     }, []);
 
     const showMessage = (msg = '', type = 'success') => {
@@ -81,10 +76,8 @@ const Checkup = () => {
 
                     let response;
                     if (medicalRecordId) {
-                        // Update existing medical record
                         response = await updateMedicalRecord(medicalRecordId, formData);
                     } else {
-                        // Create a new medical record
                         response = await createMedicalRecord(formData);
                     }
 
@@ -93,7 +86,7 @@ const Checkup = () => {
                     } else {
                         showMessage('Gagal menyimpan perawatan', 'error');
                     }
-                    await fetchCheckups();
+                    fetchData();
                 } catch (error) {
                     showMessage('Terjadi kesalahan saat menyimpan perawatan', 'error');
                 }
@@ -130,49 +123,47 @@ const Checkup = () => {
                 </div>
             </div>
 
-            {value === 'list' && (
-                <div className="panel mt-5 overflow-hidden border-0 p-0">
-                    <div className="table-responsive">
-                        <table className="table-striped table-hover">
-                            <thead>
-                                <tr>
-                                    <th>Member</th>
-                                    <th>Status</th>
-                                    <th>Height</th>
-                                    <th>Weight</th>
-                                    <th>Age</th>
-                                    <th>Checkup Date</th>
-                                    <th>Catatan</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {filteredItems.map((checkup: any) => {
-                                    return (
-                                        <tr key={checkup.id}>
-                                            <td>{checkup.member.name}</td>
-                                            <td>{checkup.status || 'Normal'}</td>
-                                            <td>{checkup.height}</td>
-                                            <td>{checkup.weight}</td>
-                                            <td>{checkup.age} Bulan</td>
-                                            <td>{new Date(checkup.checkupDate).toLocaleString()}</td>
-                                            <td>
-                                                <button
-                                                    className="btn btn-sm btn-outline-primary"
-                                                    onClick={() => showStatusPopup(checkup.status, checkup.id, checkup.member.id, checkup.medicalRecords[0]?.id, checkup.medicalRecords[0]?.treatment)}
-                                                >
-                                                    Catatan
-                                                </button>
-                                            </td>
-                                        </tr>
-                                    );
-                                })}
-                            </tbody>
-                        </table>
-                    </div>
+            <div className="panel mt-5 overflow-hidden border-0 p-0">
+                <div className="table-responsive">
+                    <table className="table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th>Member</th>
+                                <th>Status</th>
+                                <th>Height</th>
+                                <th>Weight</th>
+                                <th>Age</th>
+                                <th>Checkup Date</th>
+                                <th>Catatan</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {list.map((checkup: any) => {
+                                return (
+                                    <tr key={checkup.id}>
+                                        <td>{checkup.member.name}</td>
+                                        <td>{checkup.status || 'Normal'}</td>
+                                        <td>{checkup.height}</td>
+                                        <td>{checkup.weight}</td>
+                                        <td>{checkup.age} Bulan</td>
+                                        <td>{new Date(checkup.checkupDate).toLocaleString()}</td>
+                                        <td>
+                                            <button
+                                                className="btn btn-sm btn-outline-primary"
+                                                onClick={() => showStatusPopup(checkup.status, checkup.id, checkup.member.id, checkup.medicalRecords[0]?.id, checkup.medicalRecords[0]?.treatment)}
+                                            >
+                                                Catatan
+                                            </button>
+                                        </td>
+                                    </tr>
+                                );
+                            })}
+                        </tbody>
+                    </table>
                 </div>
-            )}
+            </div>
         </div>
     );
 };
 
-export default Checkup;
+export default ComponentCheckup;

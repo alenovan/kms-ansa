@@ -1,60 +1,44 @@
 'use client';
 
 import IconSearch from '@/components/icon/icon-search';
-import { useEffect, useState } from 'react';
+import { useEffect, useLayoutEffect, useState } from 'react';
 import Swal from 'sweetalert2';
 import axios from 'axios';
 import { useParams } from 'next/navigation';
 import dynamic from 'next/dynamic';
-import { createMedicalRecord, updateMedicalRecord } from '@/services/checkup';
+import { createMedicalRecord, getCheckups, updateMedicalRecord } from '@/services/checkup';
+import { getMember } from '@/services/member';
 
 // Import dynamic ApexCharts to avoid SSR issues
 const Chart = dynamic(() => import('react-apexcharts'), { ssr: false });
 
-const DetailPemeriksaan = () => {
-    const { id } = useParams();
-    const [filteredItems, setFilteredItems] = useState<any>([]);
+const ComponentCheckupDetail = () => {
+    const params = useParams();
+
     const [heightSeries, setHeightSeries] = useState<any[]>([]);
     const [weightSeries, setWeightSeries] = useState<any[]>([]);
     const [categories, setCategories] = useState<string[]>([]);
     const [member, setMember] = useState<any>(null); // Store member profile data
-    const fetchPemeriksaan = async () => {
-        try {
-            const response = await axios.get(`/api/v1/intl/checkup?nik=${id}`);
-            const data = response.data.data;
+    const [list, setList] = useState<any | null>([]);
 
-            // Sort data by checkup date
-            const sortedData = data.sort((a: any, b: any) => new Date(a.checkupDate).getTime() - new Date(b.checkupDate).getTime());
+    const fetchData = async () => {
+        const data = await getCheckups();
+        const profile = await getMember(`${params?.id}`);
+        const sortedData = data?.sort((a: any, b: any) => new Date(a.checkupDate).getTime() - new Date(b.checkupDate).getTime());
+        const heights = sortedData?.map((item: any) => item.height);
+        const weights = sortedData?.map((item: any) => item.weight);
+        const dates = sortedData?.map((item: any) => new Date(item.checkupDate).toLocaleDateString());
 
-            // Extract height, weight, and date
-            const heights = sortedData.map((item: any) => item.height);
-            const weights = sortedData.map((item: any) => item.weight);
-            const dates = sortedData.map((item: any) => new Date(item.checkupDate).toLocaleDateString());
-
-            // Update state
-            setFilteredItems(sortedData);
-            setHeightSeries([{ name: 'Tinggi Badan (cm)', data: heights }]);
-            setWeightSeries([{ name: 'Berat Badan (kg)', data: weights }]);
-            setCategories(dates);
-        } catch (error) {
-            showMessage('Gagal memuat data pemeriksaan', 'error');
-        }
+        setList(sortedData);
+        setMember(profile);
+        setHeightSeries([{ name: 'Tinggi Badan (cm)', data: heights }]);
+        setWeightSeries([{ name: 'Berat Badan (kg)', data: weights }]);
+        setCategories(dates || []);
     };
 
-    const fetchProfile = async () => {
-        try {
-            const response = await axios.get(`/api/v1/intl/member/${id}`);
-            const data = response.data.data;
-            setMember(data); // Save the profile data
-        } catch (error) {
-            showMessage('Gagal memuat data profil', 'error');
-        }
-    };
-    // Fetch checkup data and profile
-    useEffect(() => {
-        fetchPemeriksaan();
-        fetchProfile();
-    }, [id]);
+    useLayoutEffect(() => {
+        fetchData();
+    }, [params?.id]);
 
     const showMessage = (msg = '', type = 'success') => {
         const toast: any = Swal.mixin({
@@ -126,7 +110,7 @@ const DetailPemeriksaan = () => {
                     } else {
                         showMessage('Gagal menyimpan perawatan', 'error');
                     }
-                    await fetchPemeriksaan();
+                    await fetchData();
                 } catch (error) {
                     showMessage('Terjadi kesalahan saat menyimpan perawatan', 'error');
                 }
@@ -248,7 +232,7 @@ const DetailPemeriksaan = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {filteredItems.map((checkup: any) => (
+                            {list.map((checkup: any) => (
                                 <tr key={checkup.id}>
                                     <td>{checkup.member.name}</td>
                                     <td>{checkup.status || 'Normal'}</td>
@@ -274,4 +258,4 @@ const DetailPemeriksaan = () => {
     );
 };
 
-export default DetailPemeriksaan;
+export default ComponentCheckupDetail;

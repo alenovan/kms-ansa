@@ -3,13 +3,32 @@ import { prisma } from '@/lib/prisma';
 import { userSchema, UserType, userUpdateSchema, UserUpdateType } from '@/lib/zod';
 import { hashPassword } from '@/utils/helpers';
 
-export const getUsers = async () => {
+export const getUsers = async ({ page = 1, pageSize = 10, search }: { page?: number; pageSize?: number; search?: string }) => {
     try {
-        const user = await prisma.user.findMany({ include: { role: true, posyandu: true, puskesmas: true } });
+        const totalCount = await prisma.user.count({
+            where: search ? { name: { contains: search } } : {},
+        });
+        const data = await prisma.user.findMany({
+            include: { role: true, posyandu: true, puskesmas: true },
+            where: search ? { name: { contains: search } } : {},
+            skip: (page - 1) * pageSize,
+            take: pageSize,
+        });
+        const totalPages = Math.ceil(totalCount / pageSize);
 
-        return user;
+        return {
+            data,
+            meta: {
+                currentPage: page,
+                totalPages,
+                totalCount,
+            },
+        };
     } catch (error) {
-        return null;
+        return {
+            data: [],
+            meta: { currentPage: page, totalPages: 0, totalCount: 0 },
+        };
     }
 };
 

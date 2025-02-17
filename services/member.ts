@@ -13,6 +13,16 @@ export const getMembers = async ({ posyanduId }: { posyanduId?: string }) => {
     }
 };
 
+export const getMember = async (id: string) => {
+    try {
+        const user = await prisma.member.findFirst({ where: { id } });
+
+        return user;
+    } catch (error) {
+        return null;
+    }
+};
+
 export const createMember = async (formData: FormData) => {
     let payload = null;
     const { name, nik, gender, dateOfBirth, motherName, posyanduId } = Object.fromEntries(formData) as MemberType;
