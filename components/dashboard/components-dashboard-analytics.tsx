@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux';
 import { IRootState } from '@/store';
 import Link from 'next/link';
 import ReactApexChart from 'react-apexcharts';
-import { getCheckups } from '@/services/checkup';
+import { getCheckupDashboard } from '@/services/checkup';
 
 const ComponentsDashboardAnalytics = () => {
     const [chartBerat, setChartBerat] = useState<any>(null);
@@ -15,7 +15,7 @@ const ComponentsDashboardAnalytics = () => {
     const [chartStatus, setChartStatus] = useState<any>(null);
 
     const fetchData = async () => {
-        const data = await getCheckups();
+        const data = await getCheckupDashboard();
 
         prosesDataGrafik(data);
     };

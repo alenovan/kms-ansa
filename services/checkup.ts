@@ -3,7 +3,39 @@
 import { prisma } from '@/lib/prisma';
 import { medicalRecordSchema, MedicalRecordType } from '@/lib/zod';
 
-export const getCheckups = async () => {
+export const getCheckups = async ({ page = 1, pageSize = 10, search }: { page?: number; pageSize?: number; search?: string }) => {
+    try {
+        const totalCount = await prisma.checkup.count({
+            where: search ? { status: { contains: search } } : {},
+        });
+        const data = await prisma.checkup.findMany({
+            include: {
+                member: true,
+                medicalRecords: true,
+            },
+            where: search ? { status: { contains: search } } : {},
+            skip: (page - 1) * pageSize,
+            take: pageSize,
+        });
+        const totalPages = Math.ceil(totalCount / pageSize);
+
+        return {
+            data,
+            meta: {
+                currentPage: page,
+                totalPages,
+                totalCount,
+            },
+        };
+    } catch (error) {
+        return {
+            data: [],
+            meta: { currentPage: page, totalPages: 0, totalCount: 0 },
+        };
+    }
+};
+
+export const getCheckupDashboard = async () => {
     try {
         const data = await prisma.checkup.findMany({
             include: {

@@ -3,14 +3,29 @@
 import { prisma } from '@/lib/prisma';
 import { posyanduSchema, PosyanduType } from '@/lib/zod';
 
-export const getPosyandus = async ({ puskesmasId }: { puskesmasId?: string }) => {
+export const getPosyandus = async ({ puskesmasId, page = 1, pageSize = 10, search }: { puskesmasId?: string; page?: number; pageSize?: number; search?: string }) => {
     try {
-        const whereClause = puskesmasId ? { puskesmasId: puskesmasId } : {};
-        const data = await prisma.posyandu.findMany({ where: whereClause, include: { puskesmas: true } });
+        const whereClause = {
+            ...(puskesmasId ? { puskesmasId } : {}),
+            ...(search ? { name: { contains: search } } : {}),
+        };
+        const totalCount = await prisma.posyandu.count({ where: whereClause });
+        const data = await prisma.posyandu.findMany({ where: whereClause, include: { puskesmas: true }, skip: (page - 1) * pageSize, take: pageSize });
+        const totalPages = Math.ceil(totalCount / pageSize);
 
-        return data;
+        return {
+            data,
+            meta: {
+                currentPage: page,
+                totalPages,
+                totalCount,
+            },
+        };
     } catch (error) {
-        return null;
+        return {
+            data: [],
+            meta: { currentPage: page, totalPages: 0, totalCount: 0 },
+        };
     }
 };
 
